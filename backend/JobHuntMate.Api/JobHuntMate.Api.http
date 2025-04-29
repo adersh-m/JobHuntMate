@@ -1,0 +1,6 @@
+@JobHuntMate.Api_HostAddress = http://localhost:5190
+
+GET {{JobHuntMate.Api_HostAddress}}/health/
+Accept: application/json
+
+###
