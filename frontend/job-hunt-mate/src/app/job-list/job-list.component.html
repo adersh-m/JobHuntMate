@@ -1,37 +1,61 @@
-<main class="content">
+<div class="content" (click)="closeAllMenus()">
     <div class="content-header">
         <h1 class="page-title">My Job Applications</h1>
-        <button class="add-btn">+ Add Job</button>
+        <button class="add-btn" (click)="openAddJobForm()">+ Add Job</button>
     </div>
-    
+
     <table class="job-table">
         <thead>
             <tr>
-                <th>Job Title</th>
-                <th>Company</th>
-                <th>Date Applied</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th style="width: 15%">Job Title</th>
+                <th style="width: 15%">Company</th>
+                <th style="width: 15%">Date Applied</th>
+                <th style="width: 15%">Job Type</th>
+                <th style="width: 15%">Status</th>
+                <th style="width: 10%">Action</th>
             </tr>
         </thead>
         <tbody>
+            <tr *ngIf="displayedJobs.length === 0">
+                <td colspan="6" class="no-jobs">No jobs found</td>
+            </tr>
             <tr *ngFor="let job of displayedJobs">
-                <td>{{job.title}}</td>
+                <td title={{job.title}}>{{job.title}}</td>
                 <td>{{job.company}}</td>
-                <td>{{job.dateApplied}}</td>
+                <td>{{job.applicationDate| date:'dd/MM/yyyy'}}</td>
+                <td>{{ job.jobType | enumLabel:'jobType' }}</td>
                 <td><span class="status-badge" [ngClass]="{
-                    'status-interviewing': job.status === 'interviewing',
-                    'status-applied': job.status === 'applied',
-                    'status-rejected': job.status === 'rejected'
-                }">{{job.status}}</span></td>
-                <td><button class="action-btn">⋯</button></td>
+                    'status-wishlist': job.status === 'WISHLIST', 
+                    'status-interviewing': job.status === 'INTERVIEWING',
+                    'status-applied': job.status === 'APPLIED',
+                    'status-offered': job.status === 'OFFERED',
+                    'status-rejected': job.status === 'REJECTED'
+                }">{{ job.status | enumLabel:'status' }}</span></td>
+                <td class="action-cell">
+                    <button class="action-btn" (click)="$event.stopPropagation(); toggleMenu(job.id)">⋯</button>
+                    <div class="action-menu" *ngIf="openMenuId === job.id">
+                        <button (click)="$event.stopPropagation(); editJob(job)">Edit</button>
+                        <button (click)="$event.stopPropagation(); deleteJob(job.id)"
+                            class="delete-action">Delete</button>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>
-    
-    <div class="pagination">
+
+    <div class="pagination" *ngIf="displayedJobs.length > 0">
         <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">&lt;</button>
         <span>Page {{currentPage}} of {{totalPages}}</span>
         <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">&gt;</button>
     </div>
-</main>
+</div>
+
+<app-add-job-modal [job]="selectedJob"
+*ngIf="showModal"
+(onSave)="onSaveJob($event)"
+(onCancel)="showModal = false">
+</app-add-job-modal>
+
+<app-confirm-modal [visible]="showDeleteConfirm" message="Do you really want to delete this job?"
+    confirmText="Yes, Delete" cancelText="Cancel" (onConfirm)="confirmDelete()"
+    (onCancel)="cancelDelete()"></app-confirm-modal>

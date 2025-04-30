@@ -1,0 +1,55 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Add New Job</h2>
+      <button class="close-btn" (click)="close()">×</button>
+    </div>
+    <form [formGroup]="jobForm" (ngSubmit)="submitForm()">
+      <div class="form-group">
+        <label for="title">Job Title</label>
+        <input id="title" type="text" formControlName="title" />
+      </div>
+      <div class="form-group">
+        <label for="company">Company</label>
+        <input id="company" type="text" formControlName="company" />
+      </div>
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input id="location" type="text" formControlName="location" />
+      </div>
+
+      <div class="form-group">
+        <label for="jobType">Type</label>
+        <select id="jobType" formControlName="jobType">
+          <option value="FULL_TIME">Full-Time</option>
+          <option value="PART_TIME">Part-Time</option>
+          <option value="CONTRACT">Contract</option>
+          <option value="INTERNSHIP">Internship</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="salary">Salary</label>
+        <input id="salary" type="text"  formControlName="salary" />
+      </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" name="status" formControlName="status">
+          <option value="WISHLIST">Wishlist</option>
+          <option value="APPLIED">Applied</option>
+          <option value="INTERVIEWING">Interviewing</option>
+          <option value="OFFERED">Offered</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+      </div>
+      <div class="form-group full-width">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">{{ job ? 'Update' : 'Add' }} Job</button>
+        <button type="button" (click)="close()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
