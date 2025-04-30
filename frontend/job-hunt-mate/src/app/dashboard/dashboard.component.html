@@ -22,7 +22,7 @@
         <section class="activity-section">
             <h2><i class="fas fa-history"></i> Recent Activity</h2>
             <div class="activity-list">
-                <div class="activity-item" *ngFor="let activity of recentActivity">
+                <div class="activity-item" *ngFor="let activity of recentActivity.slice(0, 10)">
                     <div class="activity-icon" [ngClass]="{
                         'interview': activity.action.includes('Interview'),
                         'applied': activity.action.includes('Submitted'),
@@ -48,7 +48,7 @@
         <section class="interviews-section">
             <h2>Upcoming Interviews</h2>
             <div class="interview-list" *ngIf="upcomingInterviews.length > 0; else noInterviews">
-                <div class="interview-item" *ngFor="let interview of upcomingInterviews">
+                <div class="interview-item" *ngFor="let interview of upcomingInterviews.slice(0, 10)">
                     <div class="interview-details">
                         <h4>{{interview.company}}</h4>
                         <p>{{interview.position}}</p>

@@ -8,6 +8,10 @@
     padding: 24px;
     max-width: 1200px;
     margin: 0 auto;
+
+    @media (max-width: 768px) {
+        padding: 16px;
+    }
 }
 
 .stats-grid {
@@ -15,6 +19,17 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 20px;
     margin-bottom: 32px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
 }
 
 .stat-card {
@@ -23,16 +38,28 @@
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     
+    @media (max-width: 768px) {
+        padding: 16px;
+    }
+    
     h3 {
         color: #666;
         font-size: 14px;
         margin-bottom: 8px;
+
+        @media (max-width: 768px) {
+            font-size: 13px;
+        }
     }
 
     .stat-value {
         font-size: 28px;
         font-weight: bold;
         color: #1976d2;
+
+        @media (max-width: 768px) {
+            font-size: 24px;
+        }
     }
 }
 
@@ -68,13 +95,20 @@
 }
 
 .activity-list {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+
     .activity-item {
         display: flex;
         align-items: flex-start;
         padding: 16px;
         border-radius: 8px;
-        transition: all 0.2s ease;
+        transition: transform 0.2s ease;
         margin-bottom: 8px;
+        width: 100%;
+        min-width: 0;
 
         &:hover {
             background-color: #f8f9fa;
@@ -95,7 +129,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.2s ease;
 
         i {
             font-size: 16px;
@@ -117,23 +150,30 @@
 
     .activity-details {
         flex: 1;
+        min-width: 0;
+        max-width: 100%;
 
         h4 {
             font-size: 16px;
             color: #333;
             margin: 0 0 4px 0;
             font-weight: 500;
+            line-height: 1.4;
+            word-wrap: break-word;
         }
 
         p {
             font-size: 14px;
             color: #666;
             margin: 0 0 8px 0;
+            line-height: 1.4;
+            word-wrap: break-word;
         }
 
         .activity-meta {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
 
             .activity-date {
                 font-size: 13px;
@@ -144,6 +184,7 @@
 
                 i {
                     font-size: 12px;
+                    flex-shrink: 0;
                 }
             }
         }
@@ -151,6 +192,9 @@
 }
 
 .interview-list {
+    max-height: 400px;
+    overflow-y: auto;
+
     .interview-item {
         padding: 16px;
         background: #f8f9fa;

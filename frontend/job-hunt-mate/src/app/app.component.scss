@@ -10,6 +10,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app-container {
@@ -23,12 +24,25 @@ body {
   display: flex;
   flex: 1;
   overflow: hidden;
+
+  @media (max-width: 480px) {
+    margin-top: -1px; // Fix potential gap on mobile
+  }
 }
 
 .content-area {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
 }
 
 

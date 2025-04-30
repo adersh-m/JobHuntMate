@@ -1,8 +1,11 @@
-
 .content {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
+
+    @media (max-width: 768px) {
+        padding: 16px;
+    }
 }
 
 .content-header {
@@ -10,11 +13,17 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 .page-title {
     font-size: 22px;
     font-weight: bold;
+
+    @media (max-width: 480px) {
+        font-size: 20px;
+    }
 }
 
 .add-btn {
@@ -25,6 +34,12 @@
     padding: 10px 20px;
     cursor: pointer;
     font-size: 16px;
+    white-space: nowrap;
+
+    @media (max-width: 480px) {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 .job-table {
@@ -32,13 +47,57 @@
     border-collapse: collapse;
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
+
+    tbody {
+        display: block;
+        max-height: 600px;
+        overflow-y: auto;
+
+        @media (max-width: 768px) {
+            max-height: 400px;
+        }
+    }
+
+    thead, tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    th, td {
+        width: 20%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 15px;
+
+        @media (max-width: 768px) {
+            padding: 12px 8px;
+        }
+
+        @media (max-width: 480px) {
+            &:nth-child(3) { // Date Applied column
+                display: none;
+            }
+            width: 25%; // Redistribute width for remaining columns
+        }
+    }
 }
 
 .job-table th {
     background-color: #e0e0e0;
     text-align: left;
-    padding: 12px 15px;
     font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .job-table tr:nth-child(even) {
@@ -46,7 +105,6 @@
 }
 
 .job-table td {
-    padding: 15px;
     border-bottom: 1px solid #ddd;
 }
 
@@ -57,6 +115,11 @@
     display: inline-block;
     text-align: center;
     min-width: 90px;
+    
+    @media (max-width: 768px) {
+        min-width: 70px;
+        padding: 4px 8px;
+    }
 }
 
 .status-interviewing {
@@ -88,6 +151,14 @@
     align-items: center;
     margin-top: 20px;
     gap: 10px;
+    flex-wrap: wrap;
+    padding: 0 10px;
+
+    span {
+        @media (max-width: 480px) {
+            font-size: 14px;
+        }
+    }
 }
 
 .page-btn {
@@ -100,4 +171,9 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 }
