@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 
 
 export interface JobApplication {
+  id: string;
   title: string;
   company: string;
   location: string
@@ -240,5 +241,17 @@ export class JobService {
 
   createJob(job: JobApplication): Observable<JobApplication> {
     return this.http.post<JobApplication>(`${this.apiUrl}/Jobs`, job);
+  }
+
+  updateJob(job: JobApplication): Observable<JobApplication> {
+    return this.http.put<JobApplication>(`${this.apiUrl}/Jobs/${job.id}`, job);
+  }
+
+  deleteJob(jobId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Jobs/${jobId}`);
+  }
+  
+  getJobById(jobId: string): Observable<JobApplication> {
+    return this.http.get<JobApplication>(`${this.apiUrl}/Jobs/${jobId}`);
   }
 }

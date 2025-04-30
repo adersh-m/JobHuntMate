@@ -1,6 +1,8 @@
 ﻿using JobHuntMate.Api.DTOs;
+using JobHuntMate.Api.Models;
 using JobHuntMate.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobHuntMate.Api.Controllers
 {
@@ -27,6 +29,27 @@ namespace JobHuntMate.Api.Controllers
         {
             var job = await _jobService.CreateJobAsync(dto);
             return CreatedAtAction(nameof(GetAllJobs), new { id = job.Id }, job);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateJob(Guid id, [FromBody] JobDto updatedJob)
+        {
+            var result = await _jobService.UpdateJobAsync(id, updatedJob);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteJob(Guid id)
+        {
+            var success = await _jobService.DeleteJobAsync(id);
+            if (!success)
+                return NotFound(new { message = "Job not found" });
+
+            return NoContent();
         }
     }
 }

@@ -1,36 +1,53 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { JobApplication } from '../../services/job.service';
-import { FormsModule } from '@angular/forms';
-import { CommonModule, formatDate } from '@angular/common';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-job-modal',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './add-job-modal.component.html',
   styleUrl: './add-job-modal.component.scss'
 })
-export class AddJobModalComponent {
-  @Output() closeModal = new EventEmitter();
-  @Output() jobAdded = new EventEmitter<any>();
+export class AddJobModalComponent implements OnInit {
+  
+  @Input() job: JobApplication | null = null;
+  @Output() onSave = new EventEmitter<JobApplication>();
+  @Output() onCancel = new EventEmitter();
 
-  job: JobApplication = {
-    title: '',
-    company: '',
-    location: '',
-    description: '',
-    salary: '',
-    applicationDate: (new Date()).toISOString(),
-    status: 'WISHLIST',
-    jobType: ''
-  };
+  jobForm!: FormGroup;
+  
+  constructor(private fb: FormBuilder) {}
 
-  submitForm() {
-    this.jobAdded.emit(this.job);
-    this.close();
+  ngOnInit() {
+    this.jobForm = this.fb.group({
+      title: ['', Validators.required],
+      company: ['', Validators.required],
+      status: ['', Validators.required],
+      salary: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
+      location: ['', Validators.required],
+      jobType: ['', Validators.required],
+      description: [''],
+      applicationDate: [(new Date()).toISOString(), Validators.required],
+    });
+
+    if (this.job !== undefined && this.job !== null) {
+      this.jobForm.patchValue(this.job);
+    }
+  }
+
+  submitForm() {    
+    if (this.jobForm.valid) {
+      const updatedJob = { ...this.job, ...this.jobForm.value };
+      this.onSave.emit(updatedJob);
+      this.jobForm.reset();
+      this.job = null; // Reset the job after saving  
+      this.close();
+    }
   }
 
   close() {
-    this.closeModal.emit();
+    this.onCancel.emit();
   }
 }

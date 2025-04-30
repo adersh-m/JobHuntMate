@@ -18,6 +18,8 @@ body {
   display: flex;
   flex-direction: column;
   background-color: #f8f8f8;
+  position: relative;
+  z-index: 0;
 }
 
 .main-content {
@@ -35,6 +37,8 @@ body {
   padding: 20px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
     padding: 16px;

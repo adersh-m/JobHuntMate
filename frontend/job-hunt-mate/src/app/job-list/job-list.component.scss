@@ -2,6 +2,9 @@
     flex: 1;
     padding: 20px;
     overflow-y: auto;
+    position: relative;
+    isolation: isolate; // Creates a new stacking context
+    z-index: 1;
 
     @media (max-width: 768px) {
         padding: 16px;
@@ -50,6 +53,10 @@
     display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    position: relative; // Add this to create stacking context
+    z-index: 1;
+    transform: translate3d(0, 0, 0);
+    isolation: isolate;
     
     @media (max-width: 768px) {
         font-size: 14px;
@@ -97,7 +104,7 @@
     font-weight: bold;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
 }
 
 .job-table tr:nth-child(even) {
@@ -122,12 +129,24 @@
     }
 }
 
+.status-wishlist {
+    background-color: #5A67D8;
+    color: white;
+}
+
 .status-interviewing {
-    background-color: #ffd700;
+    background-color: #4299E1;
+    color: white;
 }
 
 .status-applied {
-    background-color: #90ee90;
+    background-color: #ECC94B;
+    color: white;
+}
+
+.status-offered {
+    background-color: #48BB78;
+    color: white;
 }
 
 .status-rejected {
@@ -136,13 +155,22 @@
 }
 
 .action-btn {
-    background-color: #e0e0e0;
+    background: none;
     border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    font-size: 20px;
     cursor: pointer;
-    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    position: relative;
+    z-index: 3;
+
+    &:hover, &:focus {
+        background-color: #f0f0f0;
+    }
+
+    &::after {
+        display: none !important; // Remove bootstrap's dropdown arrow
+    }
 }
 
 .pagination {
@@ -184,4 +212,105 @@
     color: #888;
     padding: 20px;
     font-weight: bold;
+}
+
+.action-cell {
+    position: relative;
+    width: 80px !important; // Fixed width for action column
+    overflow: visible !important;
+}
+  
+.action-menu {
+    position: absolute; // Changed from fixed to absolute
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    right: 90px;  // Position relative to action cell
+    top: 0;       // Align with top of action cell
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    border-radius: 4px;
+    transform-origin: top right;
+    animation: fadeIn 0.2s ease;
+
+    button {
+        padding: 8px 16px;
+        text-align: left;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: #f5f5f5;
+        }
+
+        &.delete-action {
+            border-top: 1px solid #eee;
+            color: #dc3545;
+        }
+    }
+}
+  
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.action-menu button {
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #f5f5f5;
+    }
+
+    &:first-child {
+        border-radius: 4px 4px 0 0;
+    }
+    
+    &:last-child {
+        border-radius: 0 0 4px 4px;
+        border-top: 1px solid #eee;
+        color: #dc3545;
+    }
+}
+
+:host ::ng-deep {
+    .dropdown-menu {
+        min-width: 140px;
+        padding: 0.5rem 0;
+        margin: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        border: 1px solid #ddd;
+    }
+
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+        font-size: 14px;
+
+        &:hover {
+            background-color: #f5f5f5;
+        }
+
+        &.text-danger {
+            color: #dc3545 !important;
+        }
+    }
 }
