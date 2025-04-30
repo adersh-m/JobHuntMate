@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobHuntMate.Api", "JobHuntMate.Api.csproj", "{4F21B68B-6F1F-4ECD-A573-C79298806809}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F21B68B-6F1F-4ECD-A573-C79298806809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F21B68B-6F1F-4ECD-A573-C79298806809}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F21B68B-6F1F-4ECD-A573-C79298806809}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F21B68B-6F1F-4ECD-A573-C79298806809}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1B46EA3-91DF-44D3-A6CD-BB4CCD09E497}
+	EndGlobalSection
+EndGlobal

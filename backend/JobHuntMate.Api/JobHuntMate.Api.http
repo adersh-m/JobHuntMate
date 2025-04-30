@@ -1,6 +1,6 @@
-@JobHuntMate.Api_HostAddress = http://localhost:5190
+@JobHuntMate.API_HostAddress = http://localhost:5067
 
-GET {{JobHuntMate.Api_HostAddress}}/health/
+GET {{JobHuntMate.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
