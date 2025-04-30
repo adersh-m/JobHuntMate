@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobHuntMate.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250430100253_InitialCreate")]
+    [Migration("20250430110909_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -34,7 +34,6 @@ namespace JobHuntMate.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("JobType")

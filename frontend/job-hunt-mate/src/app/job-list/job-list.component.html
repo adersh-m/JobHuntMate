@@ -1,7 +1,7 @@
 <main class="content">
     <div class="content-header">
         <h1 class="page-title">My Job Applications</h1>
-        <button class="add-btn">+ Add Job</button>
+        <button class="add-btn" (click)="openAddJobForm()">+ Add Job</button>
     </div>
 
     <table class="job-table">
@@ -10,6 +10,7 @@
                 <th>Job Title</th>
                 <th>Company</th>
                 <th>Date Applied</th>
+                <th>Job Type</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -19,14 +20,15 @@
                 <td colspan="5" class="no-jobs">No jobs found</td>
             </tr>
             <tr *ngFor="let job of displayedJobs">
-                <td>{{job.title}}</td>
+                <td title={{job.title}}>{{job.title}}</td>
                 <td>{{job.company}}</td>
                 <td>{{job.applicationDate| date:'dd/MM/yyyy'}}</td>
+                <td>{{ job.jobType | enumLabel:'jobType' }}</td>
                 <td><span class="status-badge" [ngClass]="{
-                    'status-interviewing': job.status === 'interviewing',
-                    'status-applied': job.status === 'applied',
-                    'status-rejected': job.status === 'rejected'
-                }">{{job.status}}</span></td>
+                    'status-interviewing': (job.status === 'WISHLIST' || job.status === 'INTERVIEWING'),
+                    'status-applied': job.status === 'APPLIED' || job.status === 'OFFERED',
+                    'status-rejected': job.status === 'REJECTED'
+                }">{{ job.status | enumLabel:'status' }}</span></td>
                 <td><button class="action-btn">⋯</button></td>
             </tr>
         </tbody>
@@ -38,3 +40,9 @@
         <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">&gt;</button>
     </div>
 </main>
+
+<app-add-job-modal
+  *ngIf="showModal"
+  (closeModal)="showModal = false"
+  (jobAdded)="addJob($event)">
+</app-add-job-modal>

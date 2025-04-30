@@ -2,11 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
+
 export interface JobApplication {
   title: string;
   company: string;
+  location: string
+  description: string;
+  salary: string;
+  jobType: string;
   applicationDate: string;
-  status: 'interviewing' | 'applied' | 'rejected' | 'accepted';
+  status: 'WISHLIST' | 'APPLIED' | 'INTERVIEWING' | 'OFFERED' | 'REJECTED';
 }
 
 export interface ApplicationStats {
@@ -36,77 +41,78 @@ export interface Interview {
   providedIn: 'root'
 })
 export class JobService {
+
   private apiUrl = 'https://localhost:44341/api';
 
-  private mockJobApplications: JobApplication[] = [
-    {
-      title: 'UX Designer',
-      company: 'Google',
-      applicationDate: '04/20/2025',
-      status: 'interviewing'
-    },
-    {
-      title: 'Product Manager',
-      company: 'Microsoft',
-      applicationDate: '04/15/2025',
-      status: 'applied'
-    },
-    {
-      title: 'Frontend Dev',
-      company: 'Amazon',
-      applicationDate: '04/05/2025',
-      status: 'rejected'
-    },
-    {
-      title: 'Data Scientist',
-      company: 'Netflix',
-      applicationDate: '03/28/2025',
-      status: 'applied'
-    },
-    // Edge cases
-    {
-      title: 'Senior Full Stack Developer & DevOps Engineer (React/Node.js/AWS) - Remote/Hybrid',
-      company: 'Super Long Company Name Industries International Corporation Ltd.',
-      applicationDate: '04/30/2025',
-      status: 'applied'
-    },
-    {
-      title: 'Software Engineer with 特殊文字 & Special Characters !@#$%',
-      company: 'Company with & Special © Characters™',
-      applicationDate: '04/29/2025',
-      status: 'interviewing'
-    },
-    {
-      title: '',  // Empty title edge case
-      company: 'Test Company',
-      applicationDate: '04/28/2025',
-      status: 'applied'
-    },
-    {
-      title: 'Role with No Company',
-      company: '',  // Empty company edge case
-      applicationDate: '04/27/2025',
-      status: 'rejected'
-    },
-    {
-      title: 'Future Date Job',
-      company: 'Future Corp',
-      applicationDate: '05/01/2025',  // Future date
-      status: 'applied'
-    },
-    {
-      title: 'Old Application',
-      company: 'Past Inc',
-      applicationDate: '01/01/2020',  // Very old date
-      status: 'rejected'
-    },
-    {
-      title: 'Position with Accepted Status',
-      company: 'Dream Job Inc',
-      applicationDate: '04/15/2025',
-      status: 'accepted'
-    }
-  ];
+  // private mockJobApplications: JobApplication[] = [
+  //   {
+  //     title: 'UX Designer',
+  //     company: 'Google',
+  //     applicationDate: '04/20/2025',
+  //     status: 'interviewing'
+  //   },
+  //   {
+  //     title: 'Product Manager',
+  //     company: 'Microsoft',
+  //     applicationDate: '04/15/2025',
+  //     status: 'applied'
+  //   },
+  //   {
+  //     title: 'Frontend Dev',
+  //     company: 'Amazon',
+  //     applicationDate: '04/05/2025',
+  //     status: 'rejected'
+  //   },
+  //   {
+  //     title: 'Data Scientist',
+  //     company: 'Netflix',
+  //     applicationDate: '03/28/2025',
+  //     status: 'applied'
+  //   },
+  //   // Edge cases
+  //   {
+  //     title: 'Senior Full Stack Developer & DevOps Engineer (React/Node.js/AWS) - Remote/Hybrid',
+  //     company: 'Super Long Company Name Industries International Corporation Ltd.',
+  //     applicationDate: '04/30/2025',
+  //     status: 'applied'
+  //   },
+  //   {
+  //     title: 'Software Engineer with 特殊文字 & Special Characters !@#$%',
+  //     company: 'Company with & Special © Characters™',
+  //     applicationDate: '04/29/2025',
+  //     status: 'interviewing'
+  //   },
+  //   {
+  //     title: '',  // Empty title edge case
+  //     company: 'Test Company',
+  //     applicationDate: '04/28/2025',
+  //     status: 'applied'
+  //   },
+  //   {
+  //     title: 'Role with No Company',
+  //     company: '',  // Empty company edge case
+  //     applicationDate: '04/27/2025',
+  //     status: 'rejected'
+  //   },
+  //   {
+  //     title: 'Future Date Job',
+  //     company: 'Future Corp',
+  //     applicationDate: '05/01/2025',  // Future date
+  //     status: 'applied'
+  //   },
+  //   {
+  //     title: 'Old Application',
+  //     company: 'Past Inc',
+  //     applicationDate: '01/01/2020',  // Very old date
+  //     status: 'rejected'
+  //   },
+  //   {
+  //     title: 'Position with Accepted Status',
+  //     company: 'Dream Job Inc',
+  //     applicationDate: '04/15/2025',
+  //     status: 'accepted'
+  //   }
+  // ];
 
   private mockStats: ApplicationStats = {
     total: 25,
@@ -230,5 +236,9 @@ export class JobService {
 
   getUpcomingInterviews(): Observable<Interview[]> {
     return of(this.mockInterviews);
+  }
+
+  createJob(job: JobApplication): Observable<JobApplication> {
+    return this.http.post<JobApplication>(`${this.apiUrl}/Jobs`, job);
   }
 }

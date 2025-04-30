@@ -19,7 +19,7 @@ namespace JobHuntMate.Api.Migrations
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Company = table.Column<string>(type: "TEXT", nullable: false),
                     Location = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
                     Salary = table.Column<string>(type: "TEXT", nullable: true),
                     JobType = table.Column<string>(type: "TEXT", nullable: false),
                     Status = table.Column<string>(type: "TEXT", nullable: false),
