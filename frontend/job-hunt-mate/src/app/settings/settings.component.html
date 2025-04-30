@@ -1,0 +1,45 @@
+<main class="settings-container">
+    <div class="settings-header">
+        <h1>Settings</h1>
+    </div>
+    
+    <div class="settings-sections">
+        <section class="settings-section">
+            <h2>Profile Settings</h2>
+            <div class="setting-item">
+                <label>Email Notifications</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="email-notifications" [(ngModel)]="settings.emailNotifications">
+                    <label for="email-notifications"></label>
+                </div>
+            </div>
+            <div class="setting-item">
+                <label>Dark Mode</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="dark-mode" [(ngModel)]="settings.darkMode">
+                    <label for="dark-mode"></label>
+                </div>
+            </div>
+        </section>
+        
+        <section class="settings-section">
+            <h2>Account Settings</h2>
+            <div class="setting-item">
+                <label>Email Address</label>
+                <input type="email" placeholder="Enter your email" [(ngModel)]="settings.email">
+            </div>
+            <div class="setting-item">
+                <label>Time Zone</label>
+                <select [(ngModel)]="settings.timeZone">
+                    <option value="utc">UTC</option>
+                    <option value="est">EST</option>
+                    <option value="pst">PST</option>
+                </select>
+            </div>
+        </section>
+    </div>
+    
+    <div class="settings-actions">
+        <button class="save-btn" (click)="saveSettings()">Save Changes</button>
+    </div>
+</main>
