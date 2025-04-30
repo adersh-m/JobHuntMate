@@ -1,15 +1,32 @@
-import { Component } from '@angular/core';
-import { SidebarComponent } from "../sidebar/sidebar.component";
-import { JobListComponent } from "../job-list/job-list.component";
-import { HeaderComponent } from '../header/header.component';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { JobService, ApplicationStats, ActivityItem, Interview } from '../services/job.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SidebarComponent, JobListComponent, HeaderComponent],
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  applicationStats!: ApplicationStats;
+  recentActivity: ActivityItem[] = [];
+  upcomingInterviews: Interview[] = [];
 
+  constructor(private jobService: JobService) {}
+
+  ngOnInit() {
+    this.jobService.getApplicationStats().subscribe(stats => {
+      this.applicationStats = stats;
+    });
+
+    this.jobService.getRecentActivity().subscribe(activity => {
+      this.recentActivity = activity;
+    });
+
+    this.jobService.getUpcomingInterviews().subscribe(interviews => {
+      this.upcomingInterviews = interviews;
+    });
+  }
 }

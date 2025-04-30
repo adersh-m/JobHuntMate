@@ -1,7 +1,68 @@
-<app-header></app-header>
-<div class="dashboard">
-    <div class="main-container">
-        <app-sidebar></app-sidebar>
-        <app-job-list></app-job-list>
+<main class="dashboard-container">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Applications</h3>
+            <div class="stat-value">{{applicationStats.total}}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Active Applications</h3>
+            <div class="stat-value">{{applicationStats.active}}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Interview Stage</h3>
+            <div class="stat-value">{{applicationStats.interviewing}}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Response Rate</h3>
+            <div class="stat-value">{{(applicationStats.interviewing + applicationStats.rejected) / applicationStats.total | percent}}</div>
+        </div>
     </div>
-</div>
+
+    <div class="dashboard-content">
+        <section class="activity-section">
+            <h2><i class="fas fa-history"></i> Recent Activity</h2>
+            <div class="activity-list">
+                <div class="activity-item" *ngFor="let activity of recentActivity.slice(0, 10)">
+                    <div class="activity-icon" [ngClass]="{
+                        'interview': activity.action.includes('Interview'),
+                        'applied': activity.action.includes('Submitted'),
+                        'rejected': activity.action.includes('Rejected')
+                    }">
+                        <i class="fas" [ngClass]="{
+                            'fa-calendar-check': activity.action.includes('Interview'),
+                            'fa-paper-plane': activity.action.includes('Submitted'),
+                            'fa-times-circle': activity.action.includes('Rejected')
+                        }"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h4>{{activity.action}}</h4>
+                        <p>{{activity.position}} at {{activity.company}}</p>
+                        <div class="activity-meta">
+                            <span class="activity-date"><i class="far fa-clock"></i> {{activity.date}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="interviews-section">
+            <h2>Upcoming Interviews</h2>
+            <div class="interview-list" *ngIf="upcomingInterviews.length > 0; else noInterviews">
+                <div class="interview-item" *ngFor="let interview of upcomingInterviews.slice(0, 10)">
+                    <div class="interview-details">
+                        <h4>{{interview.company}}</h4>
+                        <p>{{interview.position}}</p>
+                        <div class="interview-meta">
+                            <span class="interview-date">{{interview.date}}</span>
+                            <span class="interview-time">{{interview.time}}</span>
+                            <span class="interview-type">{{interview.type}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #noInterviews>
+                <p class="no-interviews">No upcoming interviews scheduled</p>
+            </ng-template>
+        </section>
+    </div>
+</main>

@@ -1,12 +1,47 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { JobService, JobApplication } from '../services/job.service';
 
 @Component({
   selector: 'app-job-list',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './job-list.component.html',
   styleUrl: './job-list.component.scss'
 })
-export class JobListComponent {
+export class JobListComponent implements OnInit {
+  jobs: JobApplication[] = [];
+  displayedJobs: JobApplication[] = [];
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalPages = 1;
 
+  constructor(private jobService: JobService) {}
+
+  ngOnInit() {
+    this.jobService.getJobApplications().subscribe(jobs => {
+      this.jobs = jobs;
+      this.totalPages = Math.ceil(this.jobs.length / this.itemsPerPage);
+      this.updateDisplayedJobs();
+    });
+  }
+
+  updateDisplayedJobs() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    this.displayedJobs = this.jobs.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updateDisplayedJobs();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updateDisplayedJobs();
+    }
+  }
 }

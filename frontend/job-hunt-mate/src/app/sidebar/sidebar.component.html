@@ -1,18 +1,19 @@
 <nav class="sidebar">
-    <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
-        <div class="nav-icon"></div>
-        <span>Dashboard</span>
-    </a>
-    <a class="nav-item" routerLink="/jobs" routerLinkActive="active">
-        <div class="nav-icon"></div>
-        <span>Jobs</span>
-    </a>
-    <a class="nav-item" routerLink="/profile" routerLinkActive="active">
-        <div class="nav-icon"></div>
-        <span>Profile</span>
-    </a>
-    <a class="nav-item" routerLink="/settings" routerLinkActive="active">
-        <div class="nav-icon"></div>
-        <span>Settings</span>
-    </a>
+    <div class="sidebar-header">
+        <span class="sidebar-title">Menu</span>
+    </div>
+    <div class="nav-links">
+        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+            <i class="fas fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+        <a class="nav-item" routerLink="/jobs" routerLinkActive="active">
+            <i class="fas fa-briefcase"></i>
+            <span>Jobs</span>
+        </a>
+        <a class="nav-item" routerLink="/settings" routerLinkActive="active">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </div>
 </nav>
