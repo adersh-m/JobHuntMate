@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobHuntMate.Api", "JobHuntMate.Api.csproj", "{4F21B68B-6F1F-4ECD-A573-C79298806809}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobHuntMate.Api.Tests", "..\JobHuntMate.Apt.Tests\JobHuntMate.Api.Tests.csproj", "{855B04AB-14FD-4711-9937-5BAF309F031F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{4F21B68B-6F1F-4ECD-A573-C79298806809}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F21B68B-6F1F-4ECD-A573-C79298806809}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F21B68B-6F1F-4ECD-A573-C79298806809}.Release|Any CPU.Build.0 = Release|Any CPU
+		{855B04AB-14FD-4711-9937-5BAF309F031F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{855B04AB-14FD-4711-9937-5BAF309F031F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{855B04AB-14FD-4711-9937-5BAF309F031F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{855B04AB-14FD-4711-9937-5BAF309F031F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
