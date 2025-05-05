@@ -1,8 +1,8 @@
 <div class="app-container">
   <app-header></app-header>
   <div class="main-content">
-    <app-sidebar></app-sidebar>
-    <div class="content-area">
+    <app-sidebar *ngIf="authService.isAuthenticated$ | async"></app-sidebar>
+    <div class="content-area" [class.no-sidebar]="!(authService.isAuthenticated$ | async)">
       <router-outlet></router-outlet>
     </div>
   </div>

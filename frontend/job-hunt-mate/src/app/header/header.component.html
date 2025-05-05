@@ -1,4 +1,14 @@
 <header class="header">
     <div class="app-logo">JobTracker</div>
-    <button class="sign-in-btn">Sign In</button>
+    <div class="header-actions">
+        <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
+            <a routerLink="/login" class="auth-btn login">Sign In</a>
+            <a routerLink="/register" class="auth-btn register">Sign Up</a>
+        </ng-container>
+        <button *ngIf="authService.isAuthenticated$ | async" 
+                class="auth-btn logout" 
+                (click)="onLogout()">
+            Sign Out
+        </button>
+    </div>
 </header>

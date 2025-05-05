@@ -5,7 +5,7 @@ module.exports = {
   entry: './src/main.ts',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   },
   resolve: {
     extensions: ['.ts', '.js']
@@ -18,5 +18,10 @@ module.exports = {
         exclude: /node_modules/
       }
     ]
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
   }
 };

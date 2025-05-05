@@ -1,0 +1,50 @@
+﻿using JobHuntMate.Api.DTOs;
+using JobHuntMate.Api.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JobHuntMate.Api.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
+    {
+        private readonly IAuthService _authService;
+
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult<string>> Register(RegisterDto request)
+        {
+            try
+            {
+                var result = await _authService.RegisterAsync(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login(LoginDto request)
+        {
+            try
+            {
+                var result = await _authService.LoginAsync(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+    }
+}
