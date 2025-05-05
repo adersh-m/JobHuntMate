@@ -1,0 +1,79 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Create Account</h2>
+        <p class="auth-subtitle">Join JobTracker to manage your job applications</p>
+        
+        <div class="error-banner" *ngIf="registrationError">
+            {{ registrationError }}
+        </div>
+        
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="username">Full Name</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    formControlName="username" 
+                    placeholder="Enter your full name"
+                    [class.error]="isFieldInvalid('username')"
+                />
+                <div class="error-message" *ngIf="isFieldInvalid('username')">
+                    {{ getErrorMessage('username') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    formControlName="email" 
+                    placeholder="Enter your email"
+                    [class.error]="isFieldInvalid('email')"
+                />
+                <div class="error-message" *ngIf="isFieldInvalid('email')">
+                    {{ getErrorMessage('email') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    formControlName="password" 
+                    placeholder="Create a password"
+                    [class.error]="isFieldInvalid('password')"
+                />
+                <div class="error-message" *ngIf="isFieldInvalid('password')">
+                    {{ getErrorMessage('password') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    formControlName="confirmPassword" 
+                    placeholder="Confirm your password"
+                    [class.error]="isFieldInvalid('confirmPassword')"
+                />
+                <div class="error-message" *ngIf="isFieldInvalid('confirmPassword')">
+                    {{ getErrorMessage('confirmPassword') }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" [disabled]="registerForm.invalid || isLoading">
+                    <span *ngIf="isLoading" class="spinner"></span>
+                    {{ isLoading ? 'Creating account...' : 'Create Account' }}
+                </button>
+            </div>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+        </div>
+    </div>
+</div>
