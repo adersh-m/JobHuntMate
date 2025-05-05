@@ -51,5 +51,25 @@ namespace JobHuntMate.Api.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("interviews")]
+        public IActionResult GetInterviews()
+        {
+            return Ok(_jobService.GetInterviews());
+        }
+
+        [HttpGet("stats")]
+        public IActionResult GetStats()
+        {
+            var stats = _jobService.GetStats();
+            return Ok(stats);
+        }
+
+        [HttpGet("activity")]
+        public IActionResult GetActivities()
+        {
+            var activities = _jobService.GetActivity();
+            return Ok(activities);
+        }
     }
 }

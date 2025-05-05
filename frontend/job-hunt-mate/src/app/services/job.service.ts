@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, retry, map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { NotificationService } from './notification.service';
 
 export interface JobApplication {
   id: string;
@@ -17,11 +18,11 @@ export interface JobApplication {
 }
 
 export interface ApplicationStats {
-  total: number;
-  active: number;
-  interviewing: number;
-  rejected: number;
-  accepted: number;
+  totalJobs: number;
+  appliedJobs: number;
+  interviews: number;
+  rejections: number;
+  offers: number;
 }
 
 export interface ActivityItem {
@@ -46,79 +47,78 @@ export class JobService {
   private readonly apiUrl = `${environment.apiUrl}/jobs`;
   private readonly RETRY_COUNT = 3;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private notificationService: NotificationService
+  ) { }
 
   getJobApplications(): Observable<JobApplication[]> {
     return this.http.get<JobApplication[]>(this.apiUrl).pipe(
       retry(this.RETRY_COUNT),
-      catchError(this.handleError<JobApplication[]>('getJobApplications', []))
+      catchError(error => this.handleError('getJobApplications', error))
     );
   }
 
   getJobById(jobId: string): Observable<JobApplication> {
     return this.http.get<JobApplication>(`${this.apiUrl}/${jobId}`).pipe(
       retry(this.RETRY_COUNT),
-      catchError(this.handleError<JobApplication>('getJobById'))
+      catchError(error => this.handleError('getJobById', error))
     );
   }
 
   createJob(job: JobApplication): Observable<JobApplication> {
     return this.http.post<JobApplication>(this.apiUrl, job).pipe(
-      catchError(this.handleError<JobApplication>('createJob'))
+      tap(() => {
+        this.notificationService.showSuccess('Job application added successfully');
+      }),
+      catchError(error => this.handleError('createJob', error))
     );
   }
 
   updateJob(job: JobApplication): Observable<JobApplication> {
     return this.http.put<JobApplication>(`${this.apiUrl}/${job.id}`, job).pipe(
-      catchError(this.handleError<JobApplication>('updateJob'))
+      tap(() => {
+        this.notificationService.showSuccess('Job application updated successfully');
+      }),
+      catchError(error => this.handleError('updateJob', error))
     );
   }
 
   deleteJob(jobId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${jobId}`).pipe(
-      catchError(this.handleError<void>('deleteJob'))
+      tap(() => {
+        this.notificationService.showSuccess('Job application deleted successfully');
+      }),
+      catchError(error => this.handleError('deleteJob', error))
     );
   }
 
   getApplicationStats(): Observable<ApplicationStats> {
     return this.http.get<ApplicationStats>(`${this.apiUrl}/stats`).pipe(
       retry(this.RETRY_COUNT),
-      catchError(this.handleError<ApplicationStats>('getApplicationStats', {
-        total: 0,
-        active: 0,
-        interviewing: 0,
-        rejected: 0,
-        accepted: 0
-      }))
+      catchError(error => this.handleError('getApplicationStats', error))
     );
   }
 
   getRecentActivity(): Observable<ActivityItem[]> {
     return this.http.get<ActivityItem[]>(`${this.apiUrl}/activity`).pipe(
       retry(this.RETRY_COUNT),
-      catchError(this.handleError<ActivityItem[]>('getRecentActivity', []))
+      catchError(error => this.handleError('getRecentActivity', error))
     );
   }
 
   getUpcomingInterviews(): Observable<Interview[]> {
     return this.http.get<Interview[]>(`${this.apiUrl}/interviews`).pipe(
       retry(this.RETRY_COUNT),
-      catchError(this.handleError<Interview[]>('getUpcomingInterviews', []))
+      catchError(error => this.handleError('getUpcomingInterviews', error))
     );
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(`${operation} failed:`, error);
-      
-      // Let the user know what went wrong
-      const userMessage = this.getUserErrorMessage(error);
-      // Here you could emit this message to a notification service
-      console.error(userMessage);
-
-      // Return a safe result if provided, otherwise propagate the error
-      return result !== undefined ? of(result) : throwError(() => error);
-    };
+  private handleError(operation: string, error: any): Observable<never> {
+    const userMessage = this.getUserErrorMessage(error);
+    this.notificationService.showError(userMessage);
+    console.error(`${operation} failed:`, error);
+    return throwError(() => error);
   }
 
   private getUserErrorMessage(error: any): string {

@@ -4,16 +4,21 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
+import { NotificationComponent } from './shared/notification/notification.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, SidebarComponent, RouterOutlet],
+  imports: [
+    CommonModule, 
+    HeaderComponent, 
+    SidebarComponent, 
+    RouterOutlet,
+    NotificationComponent
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'job-hunt-mate';
-
   constructor(public authService: AuthService) {}
 }

@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          this.loginError = error.message || 'Login failed. Please try again.';
+          this.loginError = error.error || 'Login failed. Please try again.';
           this.isLoading = false;
         }
       });

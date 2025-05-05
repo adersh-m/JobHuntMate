@@ -1,14 +1,36 @@
 <header class="header">
-    <div class="app-logo">JobTracker</div>
-    <div class="header-actions">
-        <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
-            <a routerLink="/login" class="auth-btn login">Sign In</a>
-            <a routerLink="/register" class="auth-btn register">Sign Up</a>
-        </ng-container>
-        <button *ngIf="authService.isAuthenticated$ | async" 
-                class="auth-btn logout" 
-                (click)="onLogout()">
-            Sign Out
+  <a routerLink="/" class="logo" aria-label="Job Hunt Mate Home">JobHuntMate</a>
+  
+  <div class="spacer"></div>
+  
+  <ng-container *ngIf="authService.isAuthenticated$ | async; else loginButton">
+    <div class="user-menu">
+      <button class="btn btn-icon" (click)="toggleUserMenu()" aria-label="Open user menu">
+        <i class="fas fa-user-circle"></i>
+      </button>
+      <div class="dropdown-menu" *ngIf="isUserMenuOpen">
+        <a class="menu-item" routerLink="/settings">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <button class="menu-item" (click)="onLogout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
         </button>
+      </div>
     </div>
+  </ng-container>
+  
+  <ng-template #loginButton>
+    <div class="auth-buttons">
+      <a class="btn btn-secondary" routerLink="/login" title="Sign in to your account">
+        <i class="fas fa-sign-in-alt"></i>
+        <span class="button-text">Login</span>
+      </a>
+      <a class="btn btn-primary" routerLink="/register" title="Create a new account">
+        <i class="fas fa-user-plus"></i>
+        <span class="button-text">Register</span>
+      </a>
+    </div>
+  </ng-template>
 </header>

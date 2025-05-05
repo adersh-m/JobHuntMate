@@ -10,7 +10,7 @@ import { JobService, ApplicationStats, ActivityItem, Interview } from '../servic
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  applicationStats!: ApplicationStats;
+  applicationStats: ApplicationStats | null = null;
   recentActivity: ActivityItem[] = [];
   upcomingInterviews: Interview[] = [];
 

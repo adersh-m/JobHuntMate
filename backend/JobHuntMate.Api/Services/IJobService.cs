@@ -10,5 +10,10 @@ namespace JobHuntMate.Api.Services
         Task<Job> CreateJobAsync(JobDto dto);
         Task<Job> UpdateJobAsync(Guid id, JobDto updatedJobDt);
         Task<bool> DeleteJobAsync(Guid id);
+
+
+        List<Interview> GetInterviews();
+        Stats GetStats();
+        List<ActivityItem> GetActivity();
     }
 }

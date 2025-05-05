@@ -1,5 +1,6 @@
 ﻿using JobHuntMate.Api.Data;
 using JobHuntMate.Api.DTOs;
+using JobHuntMate.Api.Exceptions;
 using JobHuntMate.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -27,7 +28,7 @@ namespace JobHuntMate.Api.Services
 
             if (user == null)
             {
-                throw new Exception("User not found");
+                throw new NotFoundException("User not found");
             }
 
             using var hmac = new System.Security.Cryptography.HMACSHA512(user.PasswordSalt);
@@ -35,7 +36,7 @@ namespace JobHuntMate.Api.Services
 
             if (!computedHash.SequenceEqual(user.PasswordHash))
             {
-                throw new Exception("Invalid credentials");
+                throw new UnauthorizedException("Invalid credentials");
             }
 
             // If credentials are valid, generate the JWT token
@@ -60,7 +61,7 @@ namespace JobHuntMate.Api.Services
             // 1. Check if the user already exists  
             if (await _context.Users.AnyAsync(u => u.Username == registerDto.Username || u.Email == registerDto.Email))
             {
-                throw new Exception("Username or email already exists");
+                throw new ValidationException("Username or email already exists");
             }
 
             // 2. Create a new user and hash the password

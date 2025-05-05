@@ -2,19 +2,19 @@
     <div class="stats-grid">
         <div class="stat-card">
             <h3>Total Applications</h3>
-            <div class="stat-value">{{applicationStats.total}}</div>
+            <div class="stat-value">{{applicationStats?.totalJobs}}</div>
         </div>
         <div class="stat-card">
             <h3>Active Applications</h3>
-            <div class="stat-value">{{applicationStats.active}}</div>
+            <div class="stat-value">{{applicationStats?.appliedJobs}}</div>
         </div>
         <div class="stat-card">
             <h3>Interview Stage</h3>
-            <div class="stat-value">{{applicationStats.interviewing}}</div>
+            <div class="stat-value">{{applicationStats?.interviews}}</div>
         </div>
         <div class="stat-card">
             <h3>Response Rate</h3>
-            <div class="stat-value">{{(applicationStats.interviewing + applicationStats.rejected) / applicationStats.total | percent}}</div>
+            <div class="stat-value">{{((applicationStats?.interviews ?? 0) + (applicationStats?.rejections ?? 0)) / (applicationStats?.totalJobs ?? 1) | percent}}</div>
         </div>
     </div>
 
@@ -25,7 +25,7 @@
                 <div class="activity-item" *ngFor="let activity of recentActivity.slice(0, 10)">
                     <div class="activity-icon" [ngClass]="{
                         'interview': activity.action.includes('Interview'),
-                        'applied': activity.action.includes('Submitted'),
+                        'applied': activity.action.includes('Applied'),
                         'rejected': activity.action.includes('Rejected')
                     }">
                         <i class="fas" [ngClass]="{

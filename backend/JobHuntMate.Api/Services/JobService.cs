@@ -92,5 +92,66 @@ namespace JobHuntMate.Api.Services
                 LastUpdateDate = existingJob.LastUpdateDate
             };
         }
+
+        public List<Interview> GetInterviews()
+        {
+            // return dummy data
+            return new List<Interview>
+            {
+                new Interview
+                {
+                    Company = "Company A",
+                    Position = "Software Engineer",
+                    Date = "2023-10-01",
+                    Time = "10:00 AM",
+                    Type = "Phone"
+                },
+                new Interview
+                {
+                    Company = "Company B",
+                    Position = "Data Scientist",
+                    Date = "2023-10-05",
+                    Time = "2:00 PM",
+                    Type = "In-person"
+                }
+            };
+        }
+
+        public Stats GetStats()
+        {
+            // return dummy data
+            var stats = new Stats
+            {
+                TotalJobs = 10,
+                AppliedJobs = 5,
+                Interviews = 2,
+                Offers = 1,
+                Rejections = 2
+            };
+
+            return stats;
+        }
+
+        public List<ActivityItem> GetActivity()
+        {
+            // return dummy data
+            return new List<ActivityItem>
+            {
+                new ActivityItem
+                {
+                    Action = "Applied",
+                    Company = "Company A",
+                    Position = "Software Engineer",
+                    Date = "2023-10-01"
+                },
+                new ActivityItem
+                {
+                    Action = "Interview",
+                    Company = "Company B",
+                    Position = "Data Scientist",
+                    Date = "2023-10-05"
+                }
+            };
+        }
     }
 }
