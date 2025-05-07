@@ -9,5 +9,7 @@
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
 
+        public ICollection<JobApplication> JobApplications { get; set; }
+
     }
 }

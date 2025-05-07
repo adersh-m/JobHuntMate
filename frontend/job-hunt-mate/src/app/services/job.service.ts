@@ -6,15 +6,20 @@ import { environment } from '../../environments/environment';
 import { NotificationService } from './notification.service';
 
 export interface JobApplication {
-  id: string;
-  title: string;
+  id?: string;
+  jobTitle: string;
   company: string;
   location: string;
-  description: string;
-  salary: string;
   jobType: string;
-  applicationDate: string;
   status: 'WISHLIST' | 'APPLIED' | 'INTERVIEWING' | 'OFFERED' | 'REJECTED';
+  salary: string;
+  description: string;
+  dateApplied: string;
+  resumeLink: string;
+  notes: string;
+  interviewDate: string | null;
+  interviewMode: string | null;
+  lastUpdated: string;
 }
 
 export interface ApplicationStats {
@@ -30,6 +35,7 @@ export interface ActivityItem {
   company: string;
   position: string;
   date: string;
+  jobId: string;
 }
 
 export interface Interview {

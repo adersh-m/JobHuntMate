@@ -30,6 +30,8 @@
                 NotFoundException => StatusCodes.Status404NotFound,
                 ValidationException => StatusCodes.Status400BadRequest,
                 UnauthorizedException => StatusCodes.Status401Unauthorized,
+                UnauthorizedAccessException => StatusCodes.Status401Unauthorized, // Added handling for UnauthorizedAccessException
+                InvalidOperationException => StatusCodes.Status400BadRequest,     // Added handling for InvalidOperationException
                 _ => StatusCodes.Status500InternalServerError
             };
 
@@ -44,5 +46,4 @@
             return context.Response.WriteAsJsonAsync(response);
         }
     }
-
 }

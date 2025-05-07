@@ -10,7 +10,7 @@ export interface Notification {
   providedIn: 'root'
 })
 export class NotificationService {
-  private notificationSubject = new Subject<Notification>();
+  private notificationSubject = new Subject<Notification | null>();
   notifications$ = this.notificationSubject.asObservable();
 
   showSuccess(message: string) {
@@ -19,5 +19,9 @@ export class NotificationService {
 
   showError(message: string) {
     this.notificationSubject.next({ message, type: 'error' });
+  }
+
+  clear() {
+    this.notificationSubject.next(null);
   }
 }

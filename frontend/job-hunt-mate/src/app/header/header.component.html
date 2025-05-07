@@ -1,36 +1,28 @@
 <header class="header">
-  <a routerLink="/" class="logo" aria-label="Job Hunt Mate Home">JobHuntMate</a>
-  
-  <div class="spacer"></div>
-  
-  <ng-container *ngIf="authService.isAuthenticated$ | async; else loginButton">
-    <div class="user-menu">
-      <button class="btn btn-icon" (click)="toggleUserMenu()" aria-label="Open user menu">
-        <i class="fas fa-user-circle"></i>
-      </button>
-      <div class="dropdown-menu" *ngIf="isUserMenuOpen">
-        <a class="menu-item" routerLink="/settings">
-          <i class="fas fa-cog"></i>
-          <span>Settings</span>
-        </a>
-        <button class="menu-item" (click)="onLogout()">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
-        </button>
-      </div>
+    <div class="logo-section">
+        <div class="logo-container">
+            <img *ngIf="logoUrl" [src]="logoUrl" alt="JobHuntMate Logo" class="logo-image"/>
+            <span class="logo-text">JobHuntMate</span>
+        </div>
     </div>
-  </ng-container>
-  
-  <ng-template #loginButton>
-    <div class="auth-buttons">
-      <a class="btn btn-secondary" routerLink="/login" title="Sign in to your account">
-        <i class="fas fa-sign-in-alt"></i>
-        <span class="button-text">Login</span>
-      </a>
-      <a class="btn btn-primary" routerLink="/register" title="Create a new account">
-        <i class="fas fa-user-plus"></i>
-        <span class="button-text">Register</span>
-      </a>
+    <div class="header-actions">
+        <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
+            <a routerLink="/login" class="auth-btn login">Sign In</a>
+            <a routerLink="/register" class="auth-btn register">Sign Up</a>
+        </ng-container>
+        <div class="user-menu" *ngIf="authService.isAuthenticated$ | async">
+            <button class="auth-btn user-btn" (click)="toggleUserMenu()">
+                <i class="fas fa-user"></i>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="user-dropdown" *ngIf="showUserMenu">
+                <a routerLink="/settings" class="dropdown-item">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <button class="dropdown-item" (click)="onLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </button>
+            </div>
+        </div>
     </div>
-  </ng-template>
 </header>

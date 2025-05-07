@@ -78,7 +78,7 @@ export class RegisterComponent implements OnInit {
       
       this.authService.register(registrationData).subscribe({
         next: () => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
           this.registrationError = error.message || 'Registration failed. Please try again.';

@@ -18,10 +18,6 @@ export class ErrorInterceptor implements HttpInterceptor {
         let errorMessage = 'An unexpected error occurred';
         
         switch (error.status) {
-          case 400:
-            errorMessage = 'Invalid Credentials. Please try again';
-            this.router.navigate(['/login']);
-            break;
           case 401:
             errorMessage = 'Please log in to continue';
             this.router.navigate(['/login']);
@@ -38,7 +34,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             break;
           default:
             if (error.error?.message) {
-              errorMessage = error.error.message;
+              errorMessage = "An error occured. Please try again";//error.error.message;
             }
         }
 
