@@ -32,7 +32,7 @@
                     'status-rejected': job.status === 'REJECTED'
                 }">{{ job.status | enumLabel:'status' }}</span></td>
                 <td class="action-cell">
-                    <button class="view-btn" (click)="viewJob(job.id)">View</button>
+                    <button class="view-btn" (click)="viewJob(job?.id ?? '')">View</button>
                 </td>
             </tr>
         </tbody>

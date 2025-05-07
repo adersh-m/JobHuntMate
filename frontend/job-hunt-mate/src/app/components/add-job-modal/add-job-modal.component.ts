@@ -49,7 +49,7 @@ export class AddJobModalComponent implements OnInit {
 
   private initForm() {
     this.jobForm = this.fb.group({
-      title: ['', Validators.required],
+      jobTitle: ['', Validators.required],
       company: ['', Validators.required],
       location: ['', Validators.required],
       jobType: ['', Validators.required],
