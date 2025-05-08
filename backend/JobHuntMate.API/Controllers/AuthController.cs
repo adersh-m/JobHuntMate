@@ -45,6 +45,20 @@ namespace JobHuntMate.Api.Controllers
             }
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+            var result = await _authService.ForgotPasswordAsync(forgotPasswordDto);
+            if (!result) return BadRequest("Invalid email address.");
+            return Ok("Password reset link has been sent to your email.");
+        }
 
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            var result = await _authService.ResetPasswordAsync(resetPasswordDto);
+            if (!result) return BadRequest("Invalid token or token expired.");
+            return Ok("Password has been reset successfully.");
+        }
     }
 }

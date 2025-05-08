@@ -114,24 +114,47 @@ export class AddJobModalComponent implements OnInit {
       this.isSubmitting = true;
       const formValues = this.jobForm.value;
       
-      const jobData: JobApplication = {
-        ...formValues,
-        id: this.isEditing ? this.jobId! : '', // Only include ID if editing
-        lastUpdated: new Date().toISOString()
-      };
+      if (this.isEditing) {
+        const jobData: JobApplication = {
+          ...formValues,
+          id: this.jobId!, // Only include ID if editing
+          lastUpdated: new Date().toISOString()
+        };
 
-      const request = this.isEditing ? 
-        this.jobService.updateJob(jobData) :
-        this.jobService.createJob(jobData);
+        this.jobService.updateJob(jobData).subscribe({
+          next: () => {
+            this.router.navigate(['/jobs']);
+          },
+          error: () => {
+            this.isSubmitting = false;
+          }
+        });
+      } else {
+        const jobApplication: Omit<JobApplication, 'id'> = {
+          jobTitle: formValues.jobTitle,
+          company: formValues.company,
+          location: formValues.location,
+          jobType: formValues.jobType,
+          status: formValues.status,
+          salary: formValues.salary,
+          description: formValues.description,
+          dateApplied: formValues.dateApplied,
+          resumeLink: formValues.resumeLink,
+          notes: formValues.notes,
+          interviewDate: formValues.interviewDate,
+          interviewMode: formValues.interviewMode,
+          lastUpdated: new Date().toISOString()
+        };
 
-      request.subscribe({
-        next: () => {
-          this.router.navigate(['/jobs']);
-        },
-        error: () => {
-          this.isSubmitting = false;
-        }
-      });
+        this.jobService.createJob(jobApplication).subscribe({
+          next: () => {
+            this.router.navigate(['/jobs']);
+          },
+          error: () => {
+            this.isSubmitting = false;
+          }
+        });
+      }
     }
   }
 

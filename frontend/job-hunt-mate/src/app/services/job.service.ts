@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry, tap } from 'rxjs/operators';
+import { catchError, retry, tap, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { NotificationService } from './notification.service';
+import { FeatureAccessService } from './feature-access.service';
 
 export interface JobApplication {
-  id?: string;
+  id?: string | null;
   jobTitle: string;
   company: string;
   location: string;
@@ -27,7 +28,7 @@ export interface ApplicationStats {
   appliedJobs: number;
   interviews: number;
   rejections: number;
-  offers: number;
+  offers: number | undefined;
 }
 
 export interface ActivityItem {
@@ -55,7 +56,8 @@ export class JobService {
 
   constructor(
     private http: HttpClient,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private featureAccess: FeatureAccessService
   ) { }
 
   getJobApplications(): Observable<JobApplication[]> {
@@ -72,8 +74,21 @@ export class JobService {
     );
   }
 
-  createJob(job: JobApplication): Observable<JobApplication> {
-    return this.http.post<JobApplication>(this.apiUrl, job).pipe(
+  createJob(job: Omit<JobApplication, 'id'>): Observable<JobApplication> {
+    return this.getJobApplications().pipe(
+      map(jobs => {
+        const activeCount = jobs.filter(j => j.status !== 'REJECTED').length;
+        if (!this.featureAccess.canAddNewApplication(activeCount)) {
+          throw new Error('You have reached the maximum limit for active job applications in the free tier. Upgrade to add more!');
+        }
+        return job;
+      }),
+      switchMap(validatedJob => 
+        this.http.post<JobApplication>(this.apiUrl, {
+          ...validatedJob,
+          id: null // Ensure id is explicitly set to null for new jobs
+        })
+      ),
       tap(() => {
         this.notificationService.showSuccess('Job application added successfully');
       }),
@@ -102,6 +117,14 @@ export class JobService {
   getApplicationStats(): Observable<ApplicationStats> {
     return this.http.get<ApplicationStats>(`${this.apiUrl}/stats`).pipe(
       retry(this.RETRY_COUNT),
+      map(stats => ({
+        ...stats,
+        totalJobs: stats.totalJobs,
+        appliedJobs: stats.appliedJobs,
+        interviews: stats.interviews,
+        rejections: stats.rejections,
+        offers: this.featureAccess.isFeatureEnabled('enableAdvancedAnalytics') ? stats.offers : undefined
+      })),
       catchError(error => this.handleError('getApplicationStats', error))
     );
   }
@@ -117,6 +140,19 @@ export class JobService {
     return this.http.get<Interview[]>(`${this.apiUrl}/interviews`).pipe(
       retry(this.RETRY_COUNT),
       catchError(error => this.handleError('getUpcomingInterviews', error))
+    );
+  }
+
+  getRemainingQuotas(): Observable<{ applications: number; saved: number }> {
+    return this.getJobApplications().pipe(
+      map(jobs => {
+        const activeCount = jobs.filter(j => j.status !== 'REJECTED').length;
+        const savedCount = jobs.length;
+        return {
+          applications: this.featureAccess.getRemainingQuota('maxActiveApplications', activeCount),
+          saved: this.featureAccess.getRemainingQuota('maxSavedJobs', savedCount)
+        };
+      })
     );
   }
 

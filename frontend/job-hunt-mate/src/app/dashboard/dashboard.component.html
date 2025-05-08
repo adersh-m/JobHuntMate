@@ -25,6 +25,32 @@
         </div>
     </div>
 
+    <!-- Add quota information -->
+    <div class="quota-grid">
+        <div class="quota-card">
+            <h3>Active Applications</h3>
+            <div class="quota-info">
+                <div class="quota-value">{{quotas.applications}}</div>
+                <div class="quota-label">remaining</div>
+            </div>
+            <div class="quota-upgrade" *ngIf="quotas.applications === 0">
+                <i class="fas fa-lock"></i>
+                <span>Upgrade to add more applications</span>
+            </div>
+        </div>
+        <div class="quota-card">
+            <h3>Saved Jobs</h3>
+            <div class="quota-info">
+                <div class="quota-value">{{quotas.saved}}</div>
+                <div class="quota-label">remaining</div>
+            </div>
+            <div class="quota-upgrade" *ngIf="quotas.saved === 0">
+                <i class="fas fa-lock"></i>
+                <span>Upgrade to save more jobs</span>
+            </div>
+        </div>
+    </div>
+
     <div class="dashboard-content">
         <section class="activity-section">
             <h2><i class="fas fa-history"></i> Recent Activity</h2>
@@ -61,33 +87,72 @@
             </div>
         </section>
 
-        <section class="interviews-section">
-            <h2><i class="fas fa-calendar-alt"></i> Upcoming Interviews</h2>
-            <div class="interview-list" *ngIf="upcomingInterviews.length > 0; else noInterviews">
-                <div class="interview-item" *ngFor="let interview of upcomingInterviews.slice(0, 10)">
-                    <div class="interview-details">
-                        <h4><i class="fas fa-building"></i> {{interview.company}}</h4>
-                        <p><i class="fas fa-briefcase"></i> {{interview.position}}</p>
-                        <div class="interview-meta">
-                            <span class="interview-date"><i class="far fa-calendar"></i> {{interview.date}}</span>
-                            <span class="interview-time"><i class="far fa-clock"></i> {{interview.time}}</span>
-                            <span class="interview-type">
-                                <i class="fas" [ngClass]="{
-                                    'fa-video': interview.type === 'VIDEO',
-                                    'fa-phone': interview.type === 'PHONE',
-                                    'fa-building': interview.type === 'ONSITE',
-                                    'fa-laptop-code': interview.type === 'TECHNICAL',
-                                    'fa-users': interview.type === 'OTHER'
-                                }"></i>
-                                {{interview.type}}
-                            </span>
+        <div class="premium-features">
+            <section class="interviews-section">
+                <h2><i class="fas fa-calendar-alt"></i> Upcoming Interviews</h2>
+                <div class="interview-list" *ngIf="upcomingInterviews.length > 0; else noInterviews">
+                    <div class="interview-item" *ngFor="let interview of upcomingInterviews.slice(0, 10)">
+                        <div class="interview-details">
+                            <h4><i class="fas fa-building"></i> {{interview.company}}</h4>
+                            <p><i class="fas fa-briefcase"></i> {{interview.position}}</p>
+                            <div class="interview-meta">
+                                <span class="interview-date"><i class="far fa-calendar"></i> {{interview.date}}</span>
+                                <span class="interview-time"><i class="far fa-clock"></i> {{interview.time}}</span>
+                                <span class="interview-type">
+                                    <i class="fas" [ngClass]="{
+                                        'fa-video': interview.type === 'VIDEO',
+                                        'fa-phone': interview.type === 'PHONE',
+                                        'fa-building': interview.type === 'ONSITE',
+                                        'fa-laptop-code': interview.type === 'TECHNICAL',
+                                        'fa-users': interview.type === 'OTHER'
+                                    }"></i>
+                                    {{interview.type}}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <ng-template #noInterviews>
-                <p class="no-interviews"><i class="far fa-calendar-times"></i> No upcoming interviews scheduled</p>
-            </ng-template>
-        </section>
+                <ng-template #noInterviews>
+                    <p class="no-interviews"><i class="far fa-calendar-times"></i> No upcoming interviews scheduled</p>
+                </ng-template>
+            </section>
+
+            <!-- Premium features teaser -->
+            <section class="premium-teaser">
+                <h2><i class="fas fa-star"></i> Premium Features</h2>
+                <div class="premium-feature-list">
+                    <div class="premium-feature">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="feature-info">
+                            <h4>Advanced Analytics</h4>
+                            <p>Get detailed insights into your job search performance</p>
+                        </div>
+                        <div class="feature-locked">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="premium-feature">
+                        <i class="fas fa-file-alt"></i>
+                        <div class="feature-info">
+                            <h4>Multiple Resume Versions</h4>
+                            <p>Track different versions of your resume</p>
+                        </div>
+                        <div class="feature-locked">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="premium-feature">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="feature-info">
+                            <h4>Calendar Integration</h4>
+                            <p>Sync interviews with your calendar</p>
+                        </div>
+                        <div class="feature-locked">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 </main>

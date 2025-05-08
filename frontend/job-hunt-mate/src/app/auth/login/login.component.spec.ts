@@ -12,7 +12,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
-    authServiceSpy.login.and.returnValue(of({ token: 'test-token', user: { id: '1', name: 'Test User', email: 'test@example.com' } }));
+    authServiceSpy.login.and.returnValue(of({ token: 'test-token', refreshToken: 'test-refresh-token', user: { id: '1', name: 'Test User', email: 'test@example.com' } }));
 
     await TestBed.configureTestingModule({
       imports: [LoginComponent, ReactiveFormsModule, RouterTestingModule],

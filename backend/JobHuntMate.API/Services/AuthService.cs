@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace JobHuntMate.Api.Services
@@ -14,11 +15,18 @@ namespace JobHuntMate.Api.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
+        private readonly IEmailService _emailService;
+        private readonly ITokenService _tokenService;
+        private readonly IPasswordService _passwordService;
 
-        public AuthService(ApplicationDbContext context, IConfiguration config)
+        public AuthService(ApplicationDbContext context, IConfiguration config, IEmailService emailService, 
+            ITokenService tokenService, IPasswordService passwordService)
         {
             _config = config;
             _context = context;
+            _emailService = emailService;
+            _tokenService = tokenService;
+            _passwordService = passwordService;
         }
 
         public async Task<AuthResponse> LoginAsync(LoginDto loginDto)
@@ -31,16 +39,34 @@ namespace JobHuntMate.Api.Services
                 throw new NotFoundException("User not found");
             }
 
-            using var hmac = new System.Security.Cryptography.HMACSHA512(user.PasswordSalt);
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
-
-            if (!computedHash.SequenceEqual(user.PasswordHash))
+            if (user.LockoutEnd.HasValue && user.LockoutEnd > DateTime.UtcNow)
             {
+                throw new UnauthorizedException("Account locked. Try again later.");
+            }
+
+
+
+            if (!_passwordService.VerifyPassword(loginDto.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                user.FailedLoginAttempts++;
+
+                if (user.FailedLoginAttempts >= 5)
+                {
+                    user.LockoutEnd = DateTime.UtcNow.AddMinutes(5); // lock for 15 mins
+                    await _context.SaveChangesAsync();
+                    throw new UnauthorizedException("Too many failed attempts. Account locked for 15 minutes.");
+                }
+
+                await _context.SaveChangesAsync();
                 throw new UnauthorizedException("Invalid credentials");
             }
 
             // If credentials are valid, generate the JWT token
-            var token = CreateToken(user);
+            var token = _tokenService.GenerateToken(user);
+
+            user.FailedLoginAttempts = 0;
+            user.LockoutEnd = null;
+            await _context.SaveChangesAsync();
 
             var authResponse = new AuthResponse
             {
@@ -64,22 +90,23 @@ namespace JobHuntMate.Api.Services
                 throw new ValidationException("Username or email already exists");
             }
 
-            // 2. Create a new user and hash the password
-            using var hmac = new System.Security.Cryptography.HMACSHA512();
+            // Hash the password using PasswordService
+            var (passwordHash, passwordSalt) = _passwordService.HashPassword(registerDto.Password);
+
             var user = new AppUser
             {
                 Username = registerDto.Username.ToLower(),
                 Email = registerDto.Email.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                PasswordSalt = hmac.Key
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
             };
 
             // 3. Save the user to the database
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // 4. Generate a JWT token (implementation not shown here)
-            var token = CreateToken(user); // Replace with actual token generation logic
+            // 4. Generate a JWT token 
+            var token = _tokenService.GenerateToken(user);
 
             // 5. Return the token
             var authResponse = new AuthResponse
@@ -96,35 +123,68 @@ namespace JobHuntMate.Api.Services
             // 6. Return the auth response with the token and user data
             return authResponse;
         }
+               
 
-        private string CreateToken(AppUser user)
-        {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim("id", user.Id.ToString())
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                //issuer: _config["Token:Issuer"],
-                // audience: _config["Token:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddDays(7),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        public Task<bool> UserExistsAsync(string username)
+        public Task<bool> UserExistsAsync(string usernameOrEmail)
         {
             // Check if the user already exists
-            return _context.Users.AnyAsync(u => u.Username == username.ToLower());
+            var normalized = usernameOrEmail.ToLower();
+            return _context.Users.AnyAsync(u =>
+                u.Username == normalized || u.Email == normalized);
+        }
+
+        public async Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordDto.Email);
+            if (user == null) return false;
+
+            // Generate a reset token (for simplicity, using a GUID here)
+            var token = GenerateSecureToken();
+            var tokenHash = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
+
+
+            // Save the token in the database (or use a secure token store)
+            user.PasswordResetToken = tokenHash;
+            user.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1); // Token valid for 1 hour
+            await _context.SaveChangesAsync();
+
+            // Send the reset token via email
+            var frontendBaseUrl = _config["FrontendBaseUrl"];
+            var resetLink = $"{frontendBaseUrl}/reset-password?token={token}&email={user.Email}";
+            await _emailService.SendEmailAsync(user.Email, "Password Reset Request", $"Click the link to reset your password: {resetLink}");
+
+            return true;
+        }
+
+        public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == resetPasswordDto.Email);
+            if (user == null || user.PasswordResetToken != resetPasswordDto.Token || user.PasswordResetTokenExpiry < DateTime.UtcNow)
+            {
+                return false; // Invalid token or token expired
+            }
+
+            // Hash the new password
+            using var hmac = new HMACSHA512();
+            user.PasswordSalt = hmac.Key;
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(resetPasswordDto.NewPassword));
+
+            // Clear the failed login attempts and lockout
+            user.FailedLoginAttempts = 0;
+            user.LockoutEnd = null;
+
+            // Clear the reset token
+            user.PasswordResetToken = null;
+            user.PasswordResetTokenExpiry = null;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        private static string GenerateSecureToken(int size = 32)
+        {
+            var tokenBytes = RandomNumberGenerator.GetBytes(size);
+            return Convert.ToBase64String(tokenBytes);
         }
     }
 }
