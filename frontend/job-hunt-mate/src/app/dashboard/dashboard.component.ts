@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JobService, ApplicationStats, ActivityItem, Interview } from '../services/job.service';
 import { HumanizePipe } from '../pipes/humanize.pipe';
-import { FeatureAccessService } from '../services/feature-access.service';
+import { FeatureFlagService } from '../services/feature-flag.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,22 +12,27 @@ import { FeatureAccessService } from '../services/feature-access.service';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   applicationStats!: ApplicationStats;
   recentActivity: ActivityItem[] = [];
-  upcomingInterviews: Interview[] = [];
-  quotas: { applications: number; saved: number } = { applications: 0, saved: 0 };
-  isAdvancedAnalyticsEnabled: boolean;
+  upcomingInterviews: Interview[] = [];  quotas: { applications: number; saved: number } = { applications: 0, saved: 0 };
+  isAdvancedAnalyticsEnabled: boolean = false;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(
     private jobService: JobService,
-    private featureAccess: FeatureAccessService
-  ) {
-    this.isAdvancedAnalyticsEnabled = this.featureAccess.isFeatureEnabled('enableAdvancedAnalytics');
+    private featureFlagService: FeatureFlagService
+  ) {}
+
+  ngOnInit(): void {
+    this.subscriptions.add(      this.featureFlagService.isFeatureEnabled('enablePremiumFeatures')
+        .subscribe(isEnabled => this.isAdvancedAnalyticsEnabled = isEnabled)
+    );
+    this.loadDashboard();
   }
 
-  ngOnInit() {
-    this.loadDashboard();
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   private loadDashboard() {

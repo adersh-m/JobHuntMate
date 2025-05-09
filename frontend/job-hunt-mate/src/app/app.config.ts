@@ -7,6 +7,10 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
+export const FEATURE_FLAGS = {
+  enablePremiumFeatures: false // Set to true to enable premium features
+};
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 

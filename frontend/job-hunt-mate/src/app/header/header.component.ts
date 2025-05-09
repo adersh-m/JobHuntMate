@@ -2,6 +2,7 @@ import { Component, OnDestroy, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -11,8 +12,10 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnDestroy {
-  logoUrl: string | null = null; // Will be set when logo is available
+  logoUrl: string | null = null;
   showUserMenu = false;
+  username = '';
+  private userSubscription: Subscription;
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -25,18 +28,23 @@ export class HeaderComponent implements OnDestroy {
     public authService: AuthService, 
     private router: Router,
     private elementRef: ElementRef
-  ) {}
-
-  ngOnDestroy() {
-    // Cleanup any subscriptions if needed
+  ) {
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
+      this.username = user?.name || 'User';
+    });
   }
 
-  toggleUserMenu() {
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
+  toggleUserMenu(): void {
     this.showUserMenu = !this.showUserMenu;
   }
 
-  onLogout() {
-    this.showUserMenu = false;
+  logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }

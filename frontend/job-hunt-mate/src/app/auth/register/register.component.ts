@@ -21,23 +21,22 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {}
-
   ngOnInit() {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
+    }, { validators: this.passwordMatchValidator.bind(this) });
   }
-
-  passwordMatchValidator(control: AbstractControl) {
+  passwordMatchValidator(control: AbstractControl): { mismatch: true } | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
     
     if (!password || !confirmPassword) return null;
-    
-    return password.value === confirmPassword.value ? null : { mismatch: true };
+
+    const match = password.value === confirmPassword.value;
+    return match ? null : { mismatch: true };
   }
 
   getErrorMessage(fieldName: string): string {
@@ -68,9 +67,8 @@ export class RegisterComponent implements OnInit {
     }
     return field ? (field.invalid && (field.dirty || field.touched)) : false;
   }
-
   onSubmit() {
-    if (this.registerForm.valid) {
+    if (this.registerForm.valid && !this.registerForm.hasError('mismatch')) {
       this.isLoading = true;
       this.registrationError = null;
       

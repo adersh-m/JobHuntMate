@@ -85,8 +85,7 @@ describe('RegisterComponent', () => {
     
     component.registerForm.setValue(testData);
     component.onSubmit();
-    
-    const { confirmPassword, ...registrationData } = testData;
+      const { confirmPassword, ...registrationData } = testData;
     expect(authServiceSpy.register).toHaveBeenCalledWith(registrationData);
   });
 });

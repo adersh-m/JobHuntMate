@@ -1,7 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotificationService, Notification } from '../../services/notification.service';
-import { Subject, Observable } from 'rxjs';
+import { NotificationService, NotificationMessage } from '../../services/notification.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-notification',
@@ -10,16 +11,47 @@ import { Subject, Observable } from 'rxjs';
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss'
 })
-export class NotificationComponent implements OnDestroy {
-  notifications$: Observable<Notification | null>;
+export class NotificationComponent implements OnDestroy, OnInit {  notifications: NotificationMessage[] = [];
   private destroy$ = new Subject<void>();
 
-  constructor(private notificationService: NotificationService) {
-    this.notifications$ = this.notificationService.notifications$;
+  constructor(private notificationService: NotificationService) {}
+
+  ngOnInit() {
+    this.notificationService.notifications$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(notification => {
+        if (notification) {
+          this.notifications.push(notification);
+          if (notification.duration) {
+            setTimeout(() => {
+              this.removeNotification(notification.id);
+            }, notification.duration);
+          }
+        }
+      });
   }
 
-  close() {
-    this.notificationService.clear();
+  removeNotification(id?: string) {
+    if (id) {
+      this.notifications = this.notifications.filter(n => n.id !== id);
+    } else {
+      this.notifications = [];
+    }
+  }
+
+  getIconClass(type: string): string {
+    switch (type) {
+      case 'success':
+        return 'fas fa-check-circle';
+      case 'error':
+        return 'fas fa-times-circle';
+      case 'warning':
+        return 'fas fa-exclamation-triangle';
+      case 'info':
+        return 'fas fa-info-circle';
+      default:
+        return 'fas fa-bell';
+    }
   }
 
   ngOnDestroy() {

@@ -15,10 +15,9 @@ export class SettingsComponent {
     darkMode: false,
     email: '',
     timeZone: 'utc'
-  };
-
-  saveSettings() {
-    // In a real application, this would save to a backend service
-    console.log('Saving settings:', this.settings);
+  };  saveSettings(): void {
+    // TODO: Implement settings save to backend service
+    // For now this is a stub
+    return;
   }
 }

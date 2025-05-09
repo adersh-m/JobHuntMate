@@ -26,7 +26,7 @@
     </div>
 
     <!-- Add quota information -->
-    <div class="quota-grid">
+    <div class="quota-grid" *ngIf="isAdvancedAnalyticsEnabled">
         <div class="quota-card">
             <h3>Active Applications</h3>
             <div class="quota-info">
@@ -87,7 +87,7 @@
             </div>
         </section>
 
-        <div class="premium-features">
+        <div  class="premium-features">
             <section class="interviews-section">
                 <h2><i class="fas fa-calendar-alt"></i> Upcoming Interviews</h2>
                 <div class="interview-list" *ngIf="upcomingInterviews.length > 0; else noInterviews">
@@ -118,7 +118,7 @@
             </section>
 
             <!-- Premium features teaser -->
-            <section class="premium-teaser">
+            <section *ngIf="isAdvancedAnalyticsEnabled" class="premium-teaser">
                 <h2><i class="fas fa-star"></i> Premium Features</h2>
                 <div class="premium-feature-list">
                     <div class="premium-feature">

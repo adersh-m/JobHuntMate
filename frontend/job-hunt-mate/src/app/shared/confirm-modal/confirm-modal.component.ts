@@ -13,15 +13,14 @@ export class ConfirmModalComponent {
   @Input() confirmText = 'Confirm';
   @Input() cancelText = 'Cancel';
   @Input() visible = false;
+  @Output() confirmed = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
 
-  @Output() onConfirm = new EventEmitter<void>();
-  @Output() onCancel = new EventEmitter<void>();
-
-  confirm() {
-    this.onConfirm.emit();
+  confirm(): void {
+    this.confirmed.emit();
   }
 
-  cancel() {
-    this.onCancel.emit();
+  cancel(): void {
+    this.cancelled.emit();
   }
 }

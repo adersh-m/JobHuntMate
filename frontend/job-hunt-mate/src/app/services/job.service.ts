@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
 import { catchError, retry, tap, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { NotificationService } from './notification.service';
 import { FeatureAccessService } from './feature-access.service';
+import { ErrorHandlingService } from './error-handling.service';
 
 export interface JobApplication {
   id?: string | null;
@@ -53,11 +54,11 @@ export interface Interview {
 export class JobService {
   private readonly apiUrl = `${environment.apiUrl}/jobs`;
   private readonly RETRY_COUNT = 3;
-
   constructor(
     private http: HttpClient,
-    private notificationService: NotificationService,
-    private featureAccess: FeatureAccessService
+    private errorHandlingService: ErrorHandlingService,
+    @Inject(FeatureAccessService) private featureAccess: FeatureAccessService,
+    private notificationService: NotificationService
   ) { }
 
   getJobApplications(): Observable<JobApplication[]> {
@@ -73,15 +74,18 @@ export class JobService {
       catchError(error => this.handleError('getJobById', error))
     );
   }
-
   createJob(job: Omit<JobApplication, 'id'>): Observable<JobApplication> {
     return this.getJobApplications().pipe(
-      map(jobs => {
+      switchMap(jobs => {
         const activeCount = jobs.filter(j => j.status !== 'REJECTED').length;
-        if (!this.featureAccess.canAddNewApplication(activeCount)) {
-          throw new Error('You have reached the maximum limit for active job applications in the free tier. Upgrade to add more!');
-        }
-        return job;
+        return this.featureAccess.canAddNewApplication(activeCount).pipe(
+          map(canAdd => {
+            if (!canAdd) {
+              throw new Error('You have reached the maximum limit for active job applications in the free tier. Upgrade to add more!');
+            }
+            return job;
+          })
+        );
       }),
       switchMap(validatedJob => 
         this.http.post<JobApplication>(this.apiUrl, {
@@ -142,40 +146,25 @@ export class JobService {
       catchError(error => this.handleError('getUpcomingInterviews', error))
     );
   }
-
   getRemainingQuotas(): Observable<{ applications: number; saved: number }> {
     return this.getJobApplications().pipe(
-      map(jobs => {
+      switchMap(jobs => {
         const activeCount = jobs.filter(j => j.status !== 'REJECTED').length;
         const savedCount = jobs.length;
-        return {
-          applications: this.featureAccess.getRemainingQuota('maxActiveApplications', activeCount),
-          saved: this.featureAccess.getRemainingQuota('maxSavedJobs', savedCount)
-        };
+        return combineLatest([
+          this.featureAccess.getRemainingQuota('maxActiveApplications', activeCount),
+          this.featureAccess.getRemainingQuota('maxSavedJobs', savedCount)
+        ]).pipe(
+          map(([applications, saved = 0]) => ({
+            applications,
+            saved // Ensure 'saved' is always a number
+          }))
+        );
       })
     );
   }
-
   private handleError(operation: string, error: any): Observable<never> {
-    const userMessage = this.getUserErrorMessage(error);
-    this.notificationService.showError(userMessage);
     console.error(`${operation} failed:`, error);
-    return throwError(() => error);
-  }
-
-  private getUserErrorMessage(error: any): string {
-    if (error.status === 0) {
-      return 'Unable to connect to the server. Please check your internet connection.';
-    }
-    if (error.status === 404) {
-      return 'The requested resource was not found.';
-    }
-    if (error.status === 403) {
-      return 'You do not have permission to perform this action.';
-    }
-    if (error.status === 500) {
-      return 'An unexpected server error occurred. Please try again later.';
-    }
-    return error.message || 'An unexpected error occurred.';
+    return this.errorHandlingService.handleError(error);
   }
 }

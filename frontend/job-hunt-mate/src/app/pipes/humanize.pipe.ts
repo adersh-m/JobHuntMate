@@ -9,7 +9,7 @@ export class HumanizePipe implements PipeTransform {
     if (!value) return '';
 
     // Replace underscores and hyphens with spaces
-    let result = value.replace(/[_-]/g, ' ');
+    const result = value.replace(/[_-]/g, ' ');
 
     // Handle specific activity actions
     if (result.includes('WISHLIST')) return 'Added to Wishlist';
