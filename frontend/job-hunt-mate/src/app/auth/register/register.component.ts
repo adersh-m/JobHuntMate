@@ -15,18 +15,19 @@ export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   isLoading = false;
   registrationError: string | null = null;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
-  ngOnInit() {
+  ) {}  ngOnInit() {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required]]
+      confirmPassword: ['', [Validators.required]],
+      agreeToTerms: [false, [Validators.requiredTrue]]
     }, { validators: this.passwordMatchValidator.bind(this) });
   }
   passwordMatchValidator(control: AbstractControl): { mismatch: true } | null {

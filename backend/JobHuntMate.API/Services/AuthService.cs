@@ -1,6 +1,7 @@
 ﻿using JobHuntMate.Api.Data;
 using JobHuntMate.Api.DTOs;
 using JobHuntMate.Api.Exceptions;
+using JobHuntMate.Api.Helpers;
 using JobHuntMate.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +20,7 @@ namespace JobHuntMate.Api.Services
         private readonly ITokenService _tokenService;
         private readonly IPasswordService _passwordService;
 
-        public AuthService(ApplicationDbContext context, IConfiguration config, IEmailService emailService, 
+        public AuthService(ApplicationDbContext context, IConfiguration config, IEmailService emailService,
             ITokenService tokenService, IPasswordService passwordService)
         {
             _config = config;
@@ -123,7 +124,7 @@ namespace JobHuntMate.Api.Services
             // 6. Return the auth response with the token and user data
             return authResponse;
         }
-               
+
 
         public Task<bool> UserExistsAsync(string usernameOrEmail)
         {
@@ -150,16 +151,28 @@ namespace JobHuntMate.Api.Services
 
             // Send the reset token via email
             var frontendBaseUrl = _config["FrontendBaseUrl"];
-            var resetLink = $"{frontendBaseUrl}/reset-password?token={token}&email={user.Email}";
-            await _emailService.SendEmailAsync(user.Email, "Password Reset Request", $"Click the link to reset your password: {resetLink}");
+            var resetLink = $"{frontendBaseUrl}/reset-password?token={Uri.EscapeDataString(token)}&email={user.Email}";
+
+            var placeholders = new Dictionary<string, string>
+            {
+                { "ResetLink", resetLink },
+                { "ExpiryTime", "1 hour" }
+            };
+
+            var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "ResetPasswordTemplate.html");
+            var body = EmailTemplateHelper.GetEmailBody(templatePath, placeholders);
+            await _emailService.SendEmailAsync(user.Email, "Password Reset", body);
 
             return true;
         }
 
         public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == resetPasswordDto.Email);
-            if (user == null || user.PasswordResetToken != resetPasswordDto.Token || user.PasswordResetTokenExpiry < DateTime.UtcNow)
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Email == resetPasswordDto.Email &&
+                u.PasswordResetToken == Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(resetPasswordDto.Token))) &&
+                u.PasswordResetTokenExpiry > DateTime.UtcNow);
+            if (user == null)
             {
                 return false; // Invalid token or token expired
             }

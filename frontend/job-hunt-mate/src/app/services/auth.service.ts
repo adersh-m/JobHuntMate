@@ -28,6 +28,7 @@ interface DecodedToken {
   providedIn: 'root'
 })
 export class AuthService {
+
   private readonly apiUrl = `${environment.apiUrl}/auth`;
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -72,7 +73,10 @@ export class AuthService {
         this.isAuthenticatedSubject.next(true);
         this.startRefreshTokenTimer();
       }),
-      catchError(error => this.handleError(error))
+      catchError(error => {
+        // Do not show global notification for login errors
+        return throwError(() => error);
+      })
     );
   }
 
@@ -119,6 +123,18 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  resetPassword(data: { email: string; token: string; newPassword: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reset-password`, data).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
   private setToken(token: string): void {
     localStorage.setItem(environment.authConfig.tokenKey, token);
   }
@@ -153,6 +169,14 @@ export class AuthService {
       return decoded.exp * 1000 > Date.now();
     } catch {
       return false;
+    }
+  }
+
+  public decodeToken(token: string): DecodedToken | null {
+    try {
+      return jwtDecode<DecodedToken>(token);
+    } catch {
+      return null;
     }
   }
 

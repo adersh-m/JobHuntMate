@@ -15,17 +15,18 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = false;
   loginError: string | null = null;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
   ) {}
-
   ngOnInit() {
     this.loginForm = this.fb.group({
       usernameOrEmail : ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rememberMe: [false]
     });
   }
 
@@ -59,7 +60,11 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          this.loginError = error.error || 'Login failed. Please try again.';
+          if (error.status === 401) {
+            this.loginError = 'Invalid credentials. Please try again.';
+          } else {
+            this.loginError = error.message || 'Login failed. Please try again.';
+          }
           this.isLoading = false;
         }
       });

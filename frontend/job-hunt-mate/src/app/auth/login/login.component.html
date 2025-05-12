@@ -1,43 +1,87 @@
 <div class="auth-container">
     <div class="auth-card">
         <h2>Welcome Back</h2>
-        <p class="auth-subtitle">Sign in to continue to JobTracker</p>
+        <p class="auth-subtitle">Sign in to continue to JobHuntMate</p>
         
         <div class="error-banner" *ngIf="loginError">
-            {{ loginError }}
+            <i class="fas fa-exclamation-circle"></i> {{ loginError }}
+        </div>
+        
+        <!-- Social login options -->
+        <div class="social-login">
+            <button type="button" class="social-btn google">
+                <i class="fab fa-google"></i> Sign in with Google
+            </button>
+            <button type="button" class="social-btn linkedin">
+                <i class="fab fa-linkedin"></i> Sign in with LinkedIn
+            </button>
+        </div>
+        
+        <div class="separator">
+            <span>or continue with email</span>
         </div>
         
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
                 <label for="usernameOrEmail">Username or Email</label>
-                <input 
-                    type="text" 
-                    id="usernameOrEmail" 
-                    formControlName="usernameOrEmail" 
-                    placeholder="Enter your username or email"
-                    [class.error]="isFieldInvalid('usernameOrEmail')"
-                />
+                <div class="input-container">
+                    <i class="fas fa-user input-icon"></i>
+                    <input 
+                        type="text" 
+                        id="usernameOrEmail" 
+                        formControlName="usernameOrEmail" 
+                        placeholder="Enter your username or email"
+                        [class.error]="isFieldInvalid('usernameOrEmail')"
+                        autocomplete="username"
+                    />
+                </div>
                 <div class="error-message" *ngIf="isFieldInvalid('usernameOrEmail')">
-                    {{ getErrorMessage('usernameOrEmail') }}
+                    <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('usernameOrEmail') }}
+                </div>
+                <div class="forgot-link">
+                    <a routerLink="/forgot-username">Forgot Username?</a>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    formControlName="password" 
-                    placeholder="Enter your password"
-                    [class.error]="isFieldInvalid('password')"
-                />
+                <div class="input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input 
+                        [type]="showPassword ? 'text' : 'password'" 
+                        id="password" 
+                        formControlName="password" 
+                        placeholder="Enter your password"
+                        [class.error]="isFieldInvalid('password')"
+                        autocomplete="current-password"
+                    />
+                    <button 
+                        type="button"
+                        class="toggle-password"
+                        (click)="showPassword = !showPassword"
+                        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                    >
+                        <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+                    </button>
+                </div>
                 <div class="error-message" *ngIf="isFieldInvalid('password')">
-                    {{ getErrorMessage('password') }}
+                    <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('password') }}
+                </div>
+                <div class="forgot-link">
+                    <a routerLink="/forgot-password">Forgot Password?</a>
                 </div>
             </div>
 
+            <div class="remember-me">
+                <label class="checkbox-container">
+                    <input type="checkbox" formControlName="rememberMe">
+                    <span class="checkmark"></span>
+                    Remember me
+                </label>
+            </div>
+
             <div class="form-actions">
-                <button type="submit" [disabled]="loginForm.invalid || isLoading">
+                <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-primary">
                     <span *ngIf="isLoading" class="spinner"></span>
                     {{ isLoading ? 'Signing in...' : 'Sign In' }}
                 </button>
@@ -45,7 +89,7 @@
         </form>
 
         <div class="auth-footer">
-            <p>Don't have an account? <a routerLink="/register">Sign up</a></p>
+            <p>Don't have an account? <a routerLink="/register" class="signup-link">Create Account</a></p>
         </div>
     </div>
 </div>

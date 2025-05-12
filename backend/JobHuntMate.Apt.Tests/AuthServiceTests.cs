@@ -33,7 +33,7 @@ namespace JobHuntMate.Api.Services.Tests
             {
                 new AppUser
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Username = "testuser",
                     Email = "test@example.com",
                     PasswordHash = new byte[] { 1, 2, 3 },

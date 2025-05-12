@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -24,8 +24,8 @@ export class ErrorInterceptor implements HttpInterceptor {
           this.handleAuthError();
         }
 
-        // Let the error handling service handle the error
-        return this.errorHandlingService.handleError(error);
+        // Only delegate error, do not show notification here
+        return throwError(() => error);
       })
     );
   }

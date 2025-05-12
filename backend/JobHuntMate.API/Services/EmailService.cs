@@ -14,7 +14,7 @@ namespace JobHuntMate.Api.Services
             _emailSettings = options.Value;
         }
 
-        public async Task<bool> SendEmailAsync(string email, string subject, string body)
+        public async Task SendEmailAsync(string to, string subject, string body)
         {
             var mailMessage = new MailMessage
             {
@@ -23,7 +23,7 @@ namespace JobHuntMate.Api.Services
                 Body = body,
                 IsBodyHtml = true,
             };
-            mailMessage.To.Add(email);
+            mailMessage.To.Add(to);
 
             using var client = new SmtpClient(_emailSettings.SmtpServer, _emailSettings.SmtpPort)
             {
@@ -33,8 +33,6 @@ namespace JobHuntMate.Api.Services
 
 
             await client.SendMailAsync(mailMessage);
-
-            return true;
         }
     }
 }

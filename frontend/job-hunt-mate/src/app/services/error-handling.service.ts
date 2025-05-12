@@ -15,7 +15,7 @@ export interface ErrorDetails {
 export class ErrorHandlingService {
   constructor(private notificationService: NotificationService) {}
 
-  handleError(error: any): Observable<never> {
+  handleError(error: any) {
     let errorDetails: ErrorDetails;
 
     if (error instanceof HttpErrorResponse) {
@@ -34,9 +34,6 @@ export class ErrorHandlingService {
 
     // Show user-friendly notification
     this.notificationService.showError(errorDetails.message);
-
-    // Return an observable error
-    return throwError(() => errorDetails);
   }
 
   private handleHttpError(error: HttpErrorResponse): ErrorDetails {

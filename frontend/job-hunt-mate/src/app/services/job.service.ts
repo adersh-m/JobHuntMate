@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, throwError } from 'rxjs';
 import { catchError, retry, tap, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { NotificationService } from './notification.service';
@@ -165,6 +165,8 @@ export class JobService {
   }
   private handleError(operation: string, error: any): Observable<never> {
     console.error(`${operation} failed:`, error);
-    return this.errorHandlingService.handleError(error);
+    this.errorHandlingService.handleError(error);
+
+     return throwError(() => error);
   }
 }
