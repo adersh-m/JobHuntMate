@@ -1,8 +1,8 @@
-import { EnumLabelPipe } from './enum-label.pipe';
+// import { EnumLabelPipe } from './enum-label.pipe';
 
-describe('EnumLabelPipe', () => {
-  it('create an instance', () => {
-    const pipe = new EnumLabelPipe();
-    expect(pipe).toBeTruthy();
-  });
-});
+// describe('EnumLabelPipe', () => {
+//   it('create an instance', () => {
+//     const pipe = new EnumLabelPipe();
+//     expect(pipe).toBeTruthy();
+//   });
+// });

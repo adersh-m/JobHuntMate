@@ -80,7 +80,8 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          this.registrationError = error.message || 'Registration failed. Please try again.';
+          // Only set UI error, notification is handled by ErrorHandlingService
+          this.registrationError = error?.error?.message || 'Registration failed. Please try again.';
           this.isLoading = false;
         }
       });

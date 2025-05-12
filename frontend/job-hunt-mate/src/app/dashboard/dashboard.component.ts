@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { JobService, ApplicationStats, ActivityItem, Interview } from '../services/job.service';
 import { HumanizePipe } from '../pipes/humanize.pipe';
 import { FeatureFlagService } from '../services/feature-flag.service';
-import { Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,11 +13,21 @@ import { Subscription } from 'rxjs';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  applicationStats!: ApplicationStats;
-  recentActivity: ActivityItem[] = [];
-  upcomingInterviews: Interview[] = [];  quotas: { applications: number; saved: number } = { applications: 0, saved: 0 };
-  isAdvancedAnalyticsEnabled: boolean = false;
-  private subscriptions: Subscription = new Subscription();
+  stats: ApplicationStats = {
+    totalJobs: 0,
+    appliedJobs: 0,
+    interviews: 0,
+    rejections: 0,
+    offers: 0
+  };
+  activity: ActivityItem[] = [];
+  interviews: Interview[] = [];
+  isLoading = true;
+  error: string | null = null;
+  isAdvancedAnalyticsEnabled = false;
+  quotas: { applications: number; saved: number; } = { applications: 0, saved: 0 };
+  
+  private dashboardSubscription?: Subscription;
 
   constructor(
     private jobService: JobService,
@@ -25,31 +35,59 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subscriptions.add(      this.featureFlagService.isFeatureEnabled('enablePremiumFeatures')
-        .subscribe(isEnabled => this.isAdvancedAnalyticsEnabled = isEnabled)
-    );
     this.loadDashboard();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    if (this.dashboardSubscription) {
+      this.dashboardSubscription.unsubscribe();
+    }
   }
 
   private loadDashboard() {
-    this.jobService.getApplicationStats().subscribe(stats => {
-      this.applicationStats = stats;
-    });
+    this.isLoading = true;
+    this.error = null;
 
-    this.jobService.getRecentActivity().subscribe(activity => {
-      this.recentActivity = activity;
-    });
+    // Clean up existing subscription if any
+    if (this.dashboardSubscription) {
+      this.dashboardSubscription.unsubscribe();
+    }
 
-    this.jobService.getUpcomingInterviews().subscribe(interviews => {
-      this.upcomingInterviews = interviews;
+    this.dashboardSubscription = forkJoin({
+      featureFlag: this.featureFlagService.isFeatureEnabled('enablePremiumFeatures'),
+      stats: this.jobService.getApplicationStats(),
+      activity: this.jobService.getRecentActivity(),
+      interviews: this.jobService.getUpcomingInterviews(),
+      quotas: this.jobService.getRemainingQuotas()
+    }).subscribe({
+      next: (data) => {
+        this.isAdvancedAnalyticsEnabled = data.featureFlag;
+        this.stats = data.stats || {
+          totalJobs: 0,
+          appliedJobs: 0,
+          interviews: 0,
+          rejections: 0,
+          offers: 0
+        };
+        this.activity = Array.isArray(data.activity) ? data.activity : [];
+        this.interviews = Array.isArray(data.interviews) ? data.interviews : [];
+        this.quotas = data.quotas || { applications: 0, saved: 0 };
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load dashboard:', err);
+        this.error = 'Failed to load dashboard data';
+        this.isLoading = false;
+      }
     });
+  }
 
-    this.jobService.getRemainingQuotas().subscribe(quotas => {
-      this.quotas = quotas;
-    });
+  retryLoading(): void {
+    this.loadDashboard();
+  }
+
+  getResponseRate(): number {
+    if (!this.stats?.totalJobs) return 0;
+    return (this.stats.interviews + this.stats.rejections) / this.stats.totalJobs;
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
 import { NotificationService } from './notification.service';
 
 export interface ErrorDetails {
@@ -15,7 +14,7 @@ export interface ErrorDetails {
 export class ErrorHandlingService {
   constructor(private notificationService: NotificationService) {}
 
-  handleError(error: any) {
+  handleError(error: any, options?: { suppressToast?: boolean }): string {
     let errorDetails: ErrorDetails;
 
     if (error instanceof HttpErrorResponse) {
@@ -29,11 +28,12 @@ export class ErrorHandlingService {
       };
     }
 
-    // Log error for debugging
     console.error('Error Details:', errorDetails);
+    if (!options?.suppressToast) {
+      this.notificationService.showError(errorDetails.message);
+    }
 
-    // Show user-friendly notification
-    this.notificationService.showError(errorDetails.message);
+    return errorDetails.message;
   }
 
   private handleHttpError(error: HttpErrorResponse): ErrorDetails {
@@ -46,7 +46,7 @@ export class ErrorHandlingService {
         code = 'BAD_REQUEST';
         break;
       case 401:
-        message = 'Please log in to continue.';
+        message = 'Invalid credentials or session expired.';
         code = 'UNAUTHORIZED';
         break;
       case 403:
@@ -54,11 +54,11 @@ export class ErrorHandlingService {
         code = 'FORBIDDEN';
         break;
       case 404:
-        message = 'The requested resource was not found.';
+        message = 'Resource not found.';
         code = 'NOT_FOUND';
         break;
       case 409:
-        message = 'This operation conflicts with another request.';
+        message = 'Conflict occurred. Possibly duplicate data.';
         code = 'CONFLICT';
         break;
       case 429:
@@ -66,24 +66,20 @@ export class ErrorHandlingService {
         code = 'RATE_LIMIT';
         break;
       case 500:
-        message = 'A server error occurred. Please try again later.';
+        message = 'Internal server error. Please try again later.';
         code = 'SERVER_ERROR';
         break;
       default:
-        message = 'An unexpected error occurred. Please try again.';
+        message = error.error?.message || 'An unknown error occurred.';
         code = 'UNKNOWN';
     }
 
-    return {
-      message,
-      code,
-      technical: error.message
-    };
+    return { message, code, technical: error.message };
   }
 
   private handleGenericError(error: Error): ErrorDetails {
     return {
-      message: 'An application error occurred. Please try again.',
+      message: 'An application error occurred.',
       technical: error.message
     };
   }

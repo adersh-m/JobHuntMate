@@ -47,8 +47,17 @@ export class AuthService {
     }
   }
 
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    this.errorHandlingService.handleError(error);
+  private handleError(error: HttpErrorResponse, options?: { suppressToast?: boolean }): Observable<never> {
+    // Only show a user-friendly message for 401/404 on login, avoid duplicate toasts
+    if ((error.status === 401 || error.status === 404) && error.url?.endsWith('/login')) {
+      const backendMsg = error?.error?.message;
+      this.errorHandlingService.handleError({
+        ...error,
+        error: { message: backendMsg || 'Invalid username or password.' }
+      }, { suppressToast: true });
+    } else {
+      this.errorHandlingService.handleError(error, options);
+    }
     return throwError(() => error);
   }
 
@@ -72,11 +81,10 @@ export class AuthService {
         this.setUser(response.user);
         this.isAuthenticatedSubject.next(true);
         this.startRefreshTokenTimer();
+        // Show toast only on successful login
+        this.errorHandlingService.handleError({ error: { message: 'Login successful!' } }, { suppressToast: false });
       }),
-      catchError(error => {
-        // Do not show global notification for login errors
-        return throwError(() => error);
-      })
+      catchError(error => this.handleError(error, { suppressToast: true }))
     );
   }
 

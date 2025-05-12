@@ -69,11 +69,9 @@ export class ResetPasswordComponent {
       this.authService.resetPassword({ email: this.email, token: this.token, newPassword: password }).subscribe({
         next: () => {
           this.router.navigate(['/login']);
-          this.notificationService.showError('Successfully reset password');
           this.isLoading = false;
         },
         error: (error) => {
-          this.notificationService.showError('Failed to reset password');
           this.isLoading = false;
         }
       });

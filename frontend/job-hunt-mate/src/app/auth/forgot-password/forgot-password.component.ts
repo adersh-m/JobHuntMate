@@ -50,7 +50,8 @@ export class ForgotPasswordComponent {
                     }
                 },
                 error: (error) => {
-                    this.errorMessage = error.error?.message || 'Failed to send reset link. Please try again.';
+                    // Only set UI error, notification is handled by ErrorHandlingService
+                    this.errorMessage = error?.error?.message || 'Failed to send reset link. Please try again.';
                     this.isLoading = false;
                 }
             });
