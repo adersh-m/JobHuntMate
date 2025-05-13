@@ -28,10 +28,15 @@ body {
 
 .content-area {
   flex: 1;
-  padding: 20px;
-  background-color: #fafafa;
+  // padding: 20px;
+  background-color: var(--background);
   overflow-y: auto;
   height: 100%;
+}
+
+.dark .content-area {
+  padding: 0;
+  background-color: #0f172a;
 }
 
 

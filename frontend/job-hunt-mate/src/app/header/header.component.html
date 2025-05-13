@@ -6,6 +6,7 @@
         </div>
     </div>
     <div class="header-actions">
+        <app-dark-mode-toggle></app-dark-mode-toggle>
         <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
             <a routerLink="/login" class="auth-btn login">Sign In</a>
             <a routerLink="/register" class="auth-btn register">Sign Up</a>

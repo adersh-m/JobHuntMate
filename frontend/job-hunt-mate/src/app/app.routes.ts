@@ -3,7 +3,6 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
-import { ForgotUserComponent } from './auth/forgot-user/forgot-user.component';
 import { EmailSentComponent } from './auth/email-sent/email-sent.component';
 import { AuthGuard } from './guards/auth.guard';
 import { TncComponent } from './policies/tnc.component';
@@ -15,7 +14,6 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
-  { path: 'forgot-user', component: ForgotUserComponent },
   { path: 'email-sent', component: EmailSentComponent },
   { path: 'tnc', component: TncComponent },
   { path: 'privacy', component: PrivacyComponent },
