@@ -1,21 +1,13 @@
-:host-context(.dark) {
-  --background: #0f172a;
-  --text-primary: #f1f5f9;
-  --text-muted: #94a3b8;
-  --card-bg: #1e293b;
-  --input-bg: #334155;
-  --input-border: #475569;
-  --primary: #3b82f6;
-  --primary-hover: #60a5fa;
-}
-
-:host-context(:root), :host-context(body):not(.dark) {
-  --input-bg: #fff;
-  --input-border: #d1d5db;
-  --primary: #1d4ed8;
-  --primary-hover: #2563eb;
-  --text-primary: #1f2937;
-}
+// :root {
+//   --background: #0f172a;
+//   --text-primary: #f1f5f9;
+//   --text-muted: #94a3b8;
+//   --card-bg: #1e293b;
+//   --input-bg: #334155;
+//   --input-border: #475569;
+//   --primary: #3b82f6;
+//   --primary-hover: #60a5fa;
+// }
 
 .login-container {
   display: flex;

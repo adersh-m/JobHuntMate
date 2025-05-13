@@ -1,12 +1,13 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h2>{{ title }}</h2>
-    <p class="auth-subtitle">{{ message }}</p>
+<div class="login-container">
+  <div class="login-card">
+    <img src="logo.svg" alt="Logo" class="logo" />
+    <h2 class="title">{{ title }}</h2>
+    <p class="subtitle">{{ message }}</p>
     <div class="icon-success" aria-label="Email sent">
-      <i class="fas" [ngClass]="icon" style="font-size: 3rem; color: #1976d2;"></i>
+      <i class="fas" [ngClass]="icon"></i>
     </div>
-    <div class="form-actions" style="margin-top: 2rem;">
-      <a class="btn-primary" style="min-width: 140px;" routerLink="/login">Back to Sign In</a>
+    <div class="form-actions">
+      <a class="primary-btn" routerLink="/login">Back to Sign In</a>
     </div>
   </div>
 </div>

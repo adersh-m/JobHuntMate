@@ -1,133 +1,82 @@
-<div class="auth-container">
-    <div class="auth-card">
-        <h2>Create Account</h2>
-        <p class="auth-subtitle">Join JobHuntMate to manage your job applications</p>
-        
-        <div class="error-banner" *ngIf="registrationError">
-            <i class="fas fa-exclamation-circle"></i> {{ registrationError }}
-        </div>
-        
-        <!-- Social signup options -->
-        <div class="social-login">
-            <button type="button" class="social-btn google">
-                <i class="fab fa-google"></i> Sign up with Google
-            </button>
-            <button type="button" class="social-btn linkedin">
-                <i class="fab fa-linkedin"></i> Sign up with LinkedIn
-            </button>
-        </div>
-        
-        <div class="separator">
-            <span>or register with email</span>
-        </div>
-        
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <label for="username">Full Name</label>
-                <div class="input-container">
-                    <i class="fas fa-user input-icon"></i>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        formControlName="username" 
-                        placeholder="Enter your full name"
-                        [class.error]="isFieldInvalid('username')"
-                        autocomplete="name"
-                    />
-                </div>
-                <div class="error-message" *ngIf="isFieldInvalid('username')">
-                    <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('username') }}
-                </div>
-            </div>
+<div class="login-container">
+  <div class="login-card">
+    <img src="logo.svg" alt="Logo" class="logo" />
+    <h2 class="title">Create Account</h2>
+    <p class="subtitle">Join JobHuntMate to manage your job applications</p>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <div class="input-container">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        formControlName="email" 
-                        placeholder="Enter your email"
-                        [class.error]="isFieldInvalid('email')"
-                        autocomplete="email"
-                    />
-                </div>
-                <div class="error-message" *ngIf="isFieldInvalid('email')">
-                    <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('email') }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-container">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input 
-                        [type]="showPassword ? 'text' : 'password'" 
-                        id="password" 
-                        formControlName="password" 
-                        placeholder="Create a password"
-                        [class.error]="isFieldInvalid('password')"
-                        autocomplete="new-password"
-                    />
-                    <button 
-                        type="button"
-                        class="toggle-password"
-                        (click)="showPassword = !showPassword"
-                        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
-                    >
-                        <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
-                    </button>
-                </div>
-                <div class="error-message" *ngIf="isFieldInvalid('password')">
-                    <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('password') }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <div class="input-container">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input 
-                        [type]="showPassword ? 'text' : 'password'" 
-                        id="confirmPassword" 
-                        formControlName="confirmPassword" 
-                        placeholder="Confirm your password"
-                        [class.error]="isFieldInvalid('confirmPassword')"
-                        autocomplete="new-password"
-                    />
-                </div>
-                <div class="error-message" *ngIf="isFieldInvalid('confirmPassword')">
-                    <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('confirmPassword') }}
-                </div>
-            </div>
-
-            <!-- Agreement Section: Improved spacing and structure -->
-            <div class="form-group terms-privacy">
-                <div class="checkbox-align">
-                    <input type="checkbox" id="agreeToTerms" formControlName="agreeToTerms" />
-                    <label for="agreeToTerms">
-                        I agree to the
-                        <a routerLink="/tnc" target="_blank">Terms & Conditions</a>
-                        and
-                        <a routerLink="/privacy" target="_blank">Privacy Policy</a>
-                    </label>
-                </div>
-                <div class="error-message" *ngIf="isFieldInvalid('agreeToTerms')">
-                    <i class="fas fa-exclamation-circle"></i> You must agree to the Terms & Conditions and Privacy Policy
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" [disabled]="registerForm.invalid || isLoading" class="btn-primary">
-                    <span *ngIf="isLoading" class="spinner"></span>
-                    {{ isLoading ? 'Creating account...' : 'Create Account' }}
-                </button>
-            </div>
-        </form>
-
-        <div class="auth-footer">
-            <p>Already have an account? <a routerLink="/login" class="signup-link">Sign in</a></p>
-        </div>
+    <div class="social-buttons">
+      <button class="social"><i class="fab fa-google"></i></button>
+      <button class="social"><i class="fab fa-linkedin-in"></i></button>
     </div>
+
+    <div class="divider"><span>OR</span></div>
+
+    <div class="error-banner" *ngIf="registrationError">
+      <i class="fas fa-exclamation-circle"></i> {{ registrationError }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Full Name</label>
+        <div class="input-container">
+          <input type="text" id="username" formControlName="username" placeholder="Enter your full name" [class.error]="isFieldInvalid('username')" autocomplete="name" />
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('username')">
+          <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('username') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-container">
+          <input type="email" id="email" formControlName="email" placeholder="Enter your email" [class.error]="isFieldInvalid('email')" autocomplete="email" />
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('email')">
+          <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('email') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-container">
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" placeholder="Create a password" [class.error]="isFieldInvalid('password')" autocomplete="new-password" />
+          <button type="button" class="toggle-password" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('password')">
+          <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('password') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-container">
+          <input [type]="showPassword ? 'text' : 'password'" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm your password" [class.error]="isFieldInvalid('confirmPassword')" autocomplete="new-password" />
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('confirmPassword')">
+          <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('confirmPassword') }}
+        </div>
+      </div>
+      <div class="form-group terms-privacy">
+        <div class="checkbox-align">
+          <input type="checkbox" id="agreeToTerms" formControlName="agreeToTerms" />
+          <label for="agreeToTerms">
+            I agree to the
+            <a routerLink="/tnc" target="_blank">Terms & Conditions</a>
+            and
+            <a routerLink="/privacy" target="_blank">Privacy Policy</a>
+          </label>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('agreeToTerms')">
+          <i class="fas fa-exclamation-circle"></i> You must agree to the Terms & Conditions and Privacy Policy
+        </div>
+      </div>
+      <button type="submit" [disabled]="registerForm.invalid || isLoading" class="primary-btn">
+        <span *ngIf="isLoading" class="spinner"></span>
+        {{ isLoading ? 'Creating account...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <div class="signup">
+      Already have an account? <a routerLink="/login">Sign in</a>
+    </div>
+  </div>
 </div>

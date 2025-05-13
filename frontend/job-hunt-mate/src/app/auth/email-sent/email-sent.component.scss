@@ -1,34 +1,41 @@
 @import '../login/login.component.scss';
 
-.auth-container {
-  min-height: 100vh;
+.login-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: #f4f7fb;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--background);
+  padding: 0;
+  margin: 0;
 }
 
-.auth-card {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px 0 rgba(30, 42, 73, 0.08);
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
-  max-width: 420px;
+.login-card {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 400px;
   width: 100%;
+  box-shadow: 0 8px 20px 20px rgb(0 0 0 / 10%);
   text-align: center;
-  margin: 2rem 1rem;
+  margin: 0;
 }
 
-h2 {
-  color: #1a237e;
-  font-size: 2rem;
-  font-weight: 700;
+.logo {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.title {
+  color: var(--text-primary);
+  font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
-.auth-subtitle {
-  color: #607d8b;
-  font-size: 1.1rem;
+.subtitle {
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
 }
 
@@ -37,7 +44,7 @@ h2 {
   justify-content: center;
   align-items: center;
   font-size: 3rem;
-  color: #1976d2;
+  color: var(--primary);
   margin: 32px 0 18px 0;
 }
 
@@ -45,36 +52,34 @@ h2 {
   margin-top: 2rem;
 }
 
-.btn-primary {
-  display: inline-block;
-  background: #1976d2;
+.primary-btn {
+  background: var(--primary);
   color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
   border: none;
-  border-radius: 6px;
-  padding: 0.7rem 1.5rem;
-  font-size: 1rem;
   font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s;
-  box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.08);
   cursor: pointer;
+  transition: background 0.3s;
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-block;
+  min-width: 140px;
+  &:hover {
+    background: var(--primary-hover);
+    color: #fff;
+  }
 }
 
-.btn-primary:hover, .btn-primary:focus {
-  background: #125ea2;
-  color: #fff;
-  outline: none;
-}
-
-@media (max-width: 600px) {
-  .auth-card {
-    padding: 1.5rem 0.5rem 1.5rem 0.5rem;
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem 0.5rem;
     max-width: 98vw;
   }
-  h2 {
+  .title {
     font-size: 1.3rem;
   }
-  .auth-subtitle {
+  .subtitle {
     font-size: 1rem;
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './forgot-user.component.html',
-  styleUrls: ['./forgot-user.component.scss']
+  styleUrls: ['./forgot-user.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ForgotUserComponent {
   forgotUserForm: FormGroup;

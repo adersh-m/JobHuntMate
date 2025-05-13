@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -7,7 +7,8 @@ import { Router, RouterLink } from '@angular/router';
     standalone: true,
     imports: [CommonModule,RouterLink],
     templateUrl: './email-sent.component.html',
-    styleUrls: ['./email-sent.component.scss']
+    styleUrls: ['./email-sent.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EmailSentComponent implements OnInit {
     @Input() context: 'forgot' | 'register' = 'forgot';
