@@ -1,9 +1,9 @@
 import { Component, OnDestroy, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../core/services/auth.service';
 import { Subscription } from 'rxjs';
-import { DarkModeToggleComponent } from '@app/shared/dark-mode-toggle/dark-mode-toggle.component';
+import { DarkModeToggleComponent } from '../shared/components/dark-mode-toggle/dark-mode-toggle.component';
 
 @Component({
   selector: 'app-header',

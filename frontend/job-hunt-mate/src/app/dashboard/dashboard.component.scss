@@ -1,3 +1,23 @@
+// Card mixin (local copy for Angular component style encapsulation)
+@mixin card {
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow, 0 2px 4px rgba(0,0,0,0.1));
+  padding: 20px;
+}
+
+// Use CSS variables for shared colors
+$primary: var(--primary);
+$primary-hover: var(--primary-hover);
+$text-primary: var(--text-primary);
+$text-muted: var(--text-muted);
+$card-bg: var(--card-bg);
+$card-shadow: var(--card-shadow);
+$card-border: var(--card-border);
+
+@import 'src/styles/_theme.scss';
+@import 'src/styles/_utilities.scss';
+
 .main-container {
     display: flex;
     flex: 1;
@@ -33,17 +53,10 @@
 }
 
 .stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    
-    @media (max-width: 768px) {
-        padding: 16px;
-    }
-    
+    @include card;
+
     h3 {
-        color: #666;
+        color: $text-muted;
         font-size: 14px;
         margin-bottom: 8px;
 
@@ -55,7 +68,7 @@
     .stat-value {
         font-size: 28px;
         font-weight: bold;
-        color: #1976d2;
+        color: $primary;
 
         @media (max-width: 768px) {
             font-size: 24px;
@@ -73,22 +86,19 @@
     }
 }
 
-.activity-section, .interviews-section {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.activity-section, .interviews-section, .premium-teaser, .quota-card {
+    @include card;
 
     h2 {
         font-size: 18px;
-        color: #333;
+        color: $text-primary;
         margin-bottom: 20px;
         display: flex;
         align-items: center;
         gap: 8px;
 
         i {
-            color: #1976d2;
+            color: $primary;
             font-size: 16px;
         }
     }
@@ -108,7 +118,7 @@
         margin-bottom: 8px;
         width: 100%;
         min-width: 0;
-        background-color: #fff;
+        background-color: $card-bg;
         border: 1px solid #e9ecef;
 
         .activity-icon {
@@ -131,7 +141,7 @@
             }
 
             &.applied {
-                background-color: #1976d2;
+                background-color: $primary;
             }
 
             &.rejected {
@@ -159,7 +169,7 @@
 
             h4 {
                 font-size: 16px;
-                color: #333;
+                color: $text-primary;
                 margin: 0 0 4px 0;
                 font-weight: 500;
                 line-height: 1.4;
@@ -168,7 +178,7 @@
 
             p {
                 font-size: 14px;
-                color: #666;
+                color: $text-muted;
                 margin: 0 0 8px 0;
                 line-height: 1.4;
                 word-wrap: break-word;
@@ -197,16 +207,12 @@
     .no-activity {
         text-align: center;
         padding: 32px;
-        color: #666;
+        color: $text-muted;
         font-size: 14px;
         background: #f8f9fa;
         border-radius: 8px;
         margin-top: 16px;
     }
-}
-
-.text-muted {
-    opacity: 0.6;
 }
 
 .interview-list {
@@ -225,13 +231,13 @@
 
         h4 {
             font-size: 16px;
-            color: #333;
+            color: $text-primary;
             margin: 0 0 4px 0;
         }
 
         p {
             font-size: 14px;
-            color: #666;
+            color: $text-muted;
             margin: 0 0 8px 0;
         }
     }
@@ -247,7 +253,7 @@
             align-items: center;
             gap: 6px;
             background: #e3f2fd;
-            color: #1976d2;
+            color: $primary;
             padding: 6px 12px;
             border-radius: 16px;
             
@@ -259,7 +265,7 @@
 }
 
 .no-interviews {
-    color: #666;
+    color: $text-muted;
     font-size: 14px;
     text-align: center;
     padding: 20px;
@@ -283,13 +289,10 @@
 }
 
 .quota-card {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    @include card;
 
     h3 {
-        color: #666;
+        color: $text-muted;
         font-size: 14px;
         margin-bottom: 12px;
     }
@@ -303,11 +306,11 @@
     .quota-value {
         font-size: 28px;
         font-weight: bold;
-        color: #1976d2;
+        color: $primary;
     }
 
     .quota-label {
-        color: #666;
+        color: $text-muted;
         font-size: 14px;
     }
 
@@ -335,14 +338,11 @@
 }
 
 .premium-teaser {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    @include card;
 
     h2 {
         font-size: 18px;
-        color: #333;
+        color: $text-primary;
         margin-bottom: 20px;
         display: flex;
         align-items: center;
@@ -375,7 +375,7 @@
 
     i {
         font-size: 24px;
-        color: #1976d2;
+        color: $primary;
         width: 40px;
         height: 40px;
         display: flex;
@@ -390,13 +390,13 @@
 
         h4 {
             font-size: 16px;
-            color: #333;
+            color: $text-primary;
             margin: 0 0 4px 0;
         }
 
         p {
             font-size: 14px;
-            color: #666;
+            color: $text-muted;
             margin: 0;
         }
     }

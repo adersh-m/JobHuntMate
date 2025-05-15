@@ -5,7 +5,7 @@ import {
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, take, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { NotificationService } from '../services/notification.service';
 

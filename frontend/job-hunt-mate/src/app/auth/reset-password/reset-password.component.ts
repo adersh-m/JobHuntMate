@@ -2,8 +2,9 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { NotificationService } from '../../services/notification.service';
+import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
+import { ErrorHandlingService } from '../../core/services/error-handling.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -19,13 +20,15 @@ export class ResetPasswordComponent {
   showPassword = false;
   token: string = '';
   email: string = '';
+  errorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private errorHandler: ErrorHandlingService
   ) {
     this.resetForm = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
@@ -73,6 +76,7 @@ export class ResetPasswordComponent {
           this.isLoading = false;
         },
         error: (error) => {
+          this.errorMessage = this.errorHandler.handleError(error, { suppressToast: true });
           this.isLoading = false;
         }
       });

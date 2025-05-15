@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobService, JobApplication } from '../services/job.service';
-import { EnumLabelPipe } from '../pipes/enum-label.pipe';
-import { ConfirmModalComponent } from "../shared/confirm-modal/confirm-modal.component";
+import { JobService, JobApplication } from '../core/services/job.service';
+import { EnumLabelPipe } from '../shared/pipes/enum-label.pipe';
+import { ConfirmModalComponent } from "../shared/components/confirm-modal/confirm-modal.component";
 import { Router } from '@angular/router';
-import { NotificationService } from '../services/notification.service';
+import { NotificationService } from '../core/services/notification.service';
 
 @Component({
   selector: 'app-job-list',

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FeatureFlagAdminComponent } from './feature-flag-admin/feature-flag-admin.component';
-import { AuthGuard } from '../guards/auth.guard';
+import { AuthGuard } from '../core/guards/auth.guard';
 
 const routes: Routes = [
   {

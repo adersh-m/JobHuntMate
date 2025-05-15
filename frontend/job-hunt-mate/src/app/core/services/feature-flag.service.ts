@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FEATURE_FLAGS } from '../app.config';
+import { FEATURE_FLAGS } from '../../app.config';
 
 @Injectable({
   providedIn: 'root'

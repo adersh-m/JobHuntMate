@@ -2,7 +2,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
+import { ErrorHandlingService } from '../../core/services/error-handling.service';
 
 @Component({
     selector: 'app-forgot-password',
@@ -17,7 +18,7 @@ export class ForgotPasswordComponent {
     isLoading = false;
     errorMessage: string | null = null;
 
-    constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
+    constructor(private fb: FormBuilder, private router: Router, private authService: AuthService, private errorHandler: ErrorHandlingService) {
         this.forgotForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]]
         });
@@ -51,8 +52,7 @@ export class ForgotPasswordComponent {
                     }
                 },
                 error: (error) => {
-                    // Only set UI error, notification is handled by ErrorHandlingService
-                    this.errorMessage = error?.error?.message || 'Failed to send reset link. Please try again.';
+                    this.errorMessage = this.errorHandler.handleError(error, { suppressToast: true });
                     this.isLoading = false;
                 }
             });

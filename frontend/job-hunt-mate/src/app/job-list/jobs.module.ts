@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { JobListComponent } from './job-list.component';
 import { AddJobModalComponent } from '../components/add-job-modal/add-job-modal.component';
-import { AuthGuard } from '../guards/auth.guard';
-import { SharedModule } from '../shared/shared.module';
+import { AuthGuard } from '../core/guards/auth.guard';
+import { SharedModule } from '../shared/components/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [

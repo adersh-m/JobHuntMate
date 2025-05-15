@@ -1,7 +1,7 @@
 // dark-mode-toggle.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThemeService } from '../../services/theme.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { JobApplication, JobService } from '../../services/job.service';
+import { JobApplication, JobService } from '../../core/services/job.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NotificationService } from '../../services/notification.service';
-import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
+import { NotificationService } from '../../core/services/notification.service';
+import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-add-job-modal',

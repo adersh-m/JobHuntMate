@@ -1,42 +1,5 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: var(--background);
-  padding: 0;
-  margin: 0;
-}
-
-.login-card {
-  background: var(--card-bg);
-  border-radius: 1rem;
-  padding: 2rem;
-  max-width: 400px;
-  width: 100%;
-  box-shadow: 0 8px 20px 20px rgb(0 0 0 / 10%);
-  text-align: center;
-  transition: background 0.3s ease;
-  margin: 0;
-}
-
-.logo {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 1rem;
-  display: block;
-}
-
-h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-}
-
-.subtitle {
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-}
+@import 'src/styles/_theme.scss';
+@import 'src/styles/_utilities.scss';
 
 .social-buttons {
   display: flex;
@@ -208,23 +171,6 @@ form {
   }
 }
 
-.primary-btn {
-  background: var(--primary);
-  color: #fff;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s;
-  width: 100%;
-  font-size: 1rem;
-  margin-top: 0.5rem;
-  &:hover {
-    background: var(--primary-hover);
-  }
-}
-
 .signup {
   margin-top: 1rem;
   font-size: 0.875rem;
@@ -251,11 +197,53 @@ form {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--background);
+  padding: 0;
+  margin: 0;
+}
+
+.login-card {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 20px 20px rgb(0 0 0 / 10%);
+  text-align: center;
+  transition: background 0.3s ease;
+  margin: 0;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.primary-btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 100%;
+  font-size: 1rem;
+  &:hover {
+    background: var(--primary-hover);
+  }
+}
+
 // Responsive
 @media (max-width: 480px) {
-  .login-card {
-    padding: 1.5rem;
-  }
   .social-buttons {
     flex-direction: column;
     .social {

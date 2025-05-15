@@ -2,7 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
+import { ErrorHandlingService } from '../../core/services/error-handling.service';
 
 @Component({
   selector: 'app-register',
@@ -21,8 +22,11 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
-  ) {}  ngOnInit() {
+    private router: Router,
+    private errorHandler: ErrorHandlingService
+  ) {}  
+
+  ngOnInit() {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
@@ -31,6 +35,7 @@ export class RegisterComponent implements OnInit {
       agreeToTerms: [false, [Validators.requiredTrue]]
     }, { validators: this.passwordMatchValidator.bind(this) });
   }
+
   passwordMatchValidator(control: AbstractControl): { mismatch: true } | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
@@ -69,6 +74,7 @@ export class RegisterComponent implements OnInit {
     }
     return field ? (field.invalid && (field.dirty || field.touched)) : false;
   }
+
   onSubmit() {
     if (this.registerForm.valid && !this.registerForm.hasError('mismatch')) {
       this.isLoading = true;
@@ -81,8 +87,8 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          // Only set UI error, notification is handled by ErrorHandlingService
-          this.registrationError = error?.error?.message || 'Registration failed. Please try again.';
+          // Always use error handler for user-friendly message
+          this.registrationError = this.errorHandler.handleError(error, { suppressToast: true });
           this.isLoading = false;
         }
       });

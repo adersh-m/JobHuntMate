@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { FeatureLimits, FREE_TIER_LIMITS, PREMIUM_TIER_LIMITS } from '../interfaces/feature.interfaces';
+import { FeatureLimits, FREE_TIER_LIMITS, PREMIUM_TIER_LIMITS } from '../../interfaces/feature.interfaces';
 import { FeatureFlagService } from './feature-flag.service';
 
 type NumericFeature = 'maxActiveApplications' | 'maxSavedJobs' | 'maxNotes' | 'maxResumes';

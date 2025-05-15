@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobService, ApplicationStats, ActivityItem, Interview } from '../services/job.service';
-import { HumanizePipe } from '../pipes/humanize.pipe';
-import { FeatureFlagService } from '../services/feature-flag.service';
+import { JobService, ApplicationStats, ActivityItem, Interview } from '../core/services/job.service';
+import { HumanizePipe } from '../shared/pipes/humanize.pipe';
+import { FeatureFlagService } from '../core/services/feature-flag.service';
 import { forkJoin, Subscription } from 'rxjs';
 
 @Component({

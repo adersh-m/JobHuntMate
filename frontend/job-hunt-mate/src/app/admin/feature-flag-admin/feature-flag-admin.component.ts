@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FeatureFlagService } from '../../services/feature-flag.service';
+import { FeatureFlagService } from '../../core/services/feature-flag.service';
 import { FeatureFlags } from '../../interfaces/feature.interfaces';
-import { NotificationService } from '../../services/notification.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-feature-flag-admin',

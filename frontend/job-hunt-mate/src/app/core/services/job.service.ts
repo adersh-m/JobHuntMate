@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { combineLatest, Observable, throwError } from 'rxjs';
 import { catchError, retry, tap, map, switchMap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { NotificationService } from './notification.service';
 import { FeatureAccessService } from './feature-access.service';
 import { ErrorHandlingService } from './error-handling.service';

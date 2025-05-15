@@ -4,7 +4,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { EmailSentComponent } from './auth/email-sent/email-sent.component';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from './core/guards/auth.guard';
 import { TncComponent } from './policies/tnc.component';
 import { PrivacyComponent } from './policies/privacy.component';
 

@@ -2,9 +2,9 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
-import { ErrorInterceptor } from './interceptors/error.interceptor';
-import { LoaderInterceptor } from './interceptors/loader.interceptor';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { LoaderInterceptor } from './core/interceptors/loader.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const FEATURE_FLAGS = {
