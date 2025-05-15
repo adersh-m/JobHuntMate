@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { AuthIllustrationComponent } from '../../shared/auth-illustration.component';
 
 @Component({
     selector: 'app-email-sent',
     standalone: true,
-    imports: [CommonModule,RouterLink],
+    imports: [CommonModule, RouterLink, AuthIllustrationComponent],
     templateUrl: './email-sent.component.html',
     styleUrls: ['./email-sent.component.scss'],
     encapsulation: ViewEncapsulation.None

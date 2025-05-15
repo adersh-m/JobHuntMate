@@ -4,11 +4,12 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
+import { AuthIllustrationComponent } from '../../shared/auth-illustration.component';
 
 @Component({
     selector: 'app-forgot-password',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterLink],
+    imports: [CommonModule, ReactiveFormsModule, RouterLink, AuthIllustrationComponent],
     templateUrl: './forgot-password.component.html',
     styleUrls: ['./forgot-password.component.scss'],
     encapsulation: ViewEncapsulation.None

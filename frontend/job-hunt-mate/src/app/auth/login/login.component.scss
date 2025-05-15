@@ -15,6 +15,7 @@
   align-items: center;
   min-height: 100vh;
   background: var(--background);
+  font-family: 'Inter', system-ui, sans-serif;
   // Remove any default padding or margin
   padding: 0;
   margin: 0;
@@ -41,17 +42,22 @@
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
 }
 
 .title {
-  color: var(--text-muted) !important;
-  margin-bottom: .5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary) !important;
+  margin-bottom: 0.5rem;
 }
 
 .subtitle {
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--text-muted) !important;
   margin-bottom: 1.5rem;
 }
@@ -112,7 +118,7 @@ form {
     border-radius: 0.5rem;
     background: var(--input-bg);
     color: var(--text-primary);
-    font-size: 0.875rem;
+    font-size: 1rem;
     outline: none;
     &::placeholder {
       color: var(--text-muted);
@@ -133,9 +139,9 @@ form {
   text-align: left;
 
   label {
+    font-size: 1rem;
     font-weight: 500;
-    font-size: 0.97rem;
-    color: var(--text-muted);
+    color: var(--text-primary);
     margin-bottom: 0.4rem;
     text-align: left;
   }
@@ -182,7 +188,7 @@ form {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: var(--text-muted);
   label {
     display: flex;

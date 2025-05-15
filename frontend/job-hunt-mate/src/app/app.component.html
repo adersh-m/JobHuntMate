@@ -1,5 +1,5 @@
 <div class="app-container">
-  <app-header></app-header>
+  <app-header *ngIf="!isAuthPage"></app-header>
   <div class="main-content">
     <app-sidebar *ngIf="authService.isAuthenticated$ | async"></app-sidebar>
     <div class="content-area">

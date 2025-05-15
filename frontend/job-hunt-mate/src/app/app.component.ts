@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AuthService } from './core/services/auth.service';
 import { NotificationComponent } from './shared/components/notification/notification.component';
 import { LoaderComponent } from './shared/components/loader/loader.component';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -22,5 +23,20 @@ import { LoaderComponent } from './shared/components/loader/loader.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  constructor(public authService: AuthService) {}
+  public isAuthPage = false;
+
+  constructor(public authService: AuthService, private router: Router) {
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((event: any) => {
+      const url = event.urlAfterRedirects || event.url;
+      this.isAuthPage = [
+        '/login',
+        '/register',
+        '/forgot-password',
+        '/reset-password',
+        '/email-sent',
+        '/tnc',
+        '/privacy'
+      ].some(path => url.startsWith(path));
+    });
+  }
 }
