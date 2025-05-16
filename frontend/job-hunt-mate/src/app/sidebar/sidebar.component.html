@@ -1,13 +1,21 @@
-<nav class="sidebar">
-    <div class="sidebar-header">
-        <span class="sidebar-title">Menu</span>
-    </div>
-    <div class="nav-list">
-        <a class="nav-item" *ngFor="let item of menuItems"
-           [routerLink]="item.route"
-           routerLinkActive="active-link">
-            <i class="fas fa-{{item.icon}}"></i>
-            <span>{{item.label}}</span>
-        </a>
-    </div>
+<nav class="h-full flex flex-col transition-all duration-200"
+     [ngClass]="sidebarCollapsed ? 'w-16' : 'w-56'">
+  <div class="flex items-center justify-center h-16 border-b border-gray-200">
+    <img src="logo.svg" alt="Logo" class="h-8 w-auto" />
+  </div>
+  <div class="flex-1 flex flex-col gap-1 mt-2">
+    <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition-all duration-150"
+       *ngFor="let item of menuItems"
+       [routerLink]="item.route"
+       routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
+       [ngClass]="sidebarCollapsed ? 'justify-center' : ''">
+      <i class="fas fa-{{item.icon}} text-lg"></i>
+      <span *ngIf="!sidebarCollapsed">{{item.label}}</span>
+    </a>
+  </div>
+  <button (click)="toggleSidebarCollapse()"
+          class="flex items-center justify-center w-full py-3 border-t border-gray-200 hover:bg-gray-100 transition-all duration-150">
+    <i class="fas" [ngClass]="sidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+    <span class="ml-2 text-xs text-gray-500" *ngIf="!sidebarCollapsed">Collapse</span>
+  </button>
 </nav>

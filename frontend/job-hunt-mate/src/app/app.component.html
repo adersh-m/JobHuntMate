@@ -1,8 +1,8 @@
-<div class="app-container">
+<div class="min-h-screen flex flex-col bg-gray-50">
   <app-header *ngIf="!isAuthPage"></app-header>
-  <div class="main-content">
+  <div class="flex flex-1 pt-[60px] h-full">
     <app-sidebar *ngIf="authService.isAuthenticated$ | async"></app-sidebar>
-    <div class="content-area">
+    <div class="flex-1 overflow-y-auto">
       <router-outlet></router-outlet>
     </div>
   </div>

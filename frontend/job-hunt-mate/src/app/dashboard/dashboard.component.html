@@ -1,121 +1,148 @@
-<main class="dashboard-container">
-    <!-- Error State -->
-    <div class="error-banner" *ngIf="error">
-        <i class="fas fa-exclamation-circle"></i>
-        {{ error }}
-        <button class="retry-btn" (click)="retryLoading()">
-            <i class="fas fa-sync"></i> Retry
-        </button>
-    </div>    <!-- Stats Grid -->
-    <div class="stats-grid" *ngIf="!isLoading">
-        <div class="stat-card">            <h3>Total Applications</h3>
-            <div class="stat-value">{{stats.totalJobs}}</div>
-        </div>
-        <div class="stat-card">
-            <h3>Active Applications</h3>
-            <div class="stat-value">{{stats.appliedJobs}}</div>
-        </div>
-        <div class="stat-card">
-            <h3>Interview Stage</h3>
-            <div class="stat-value">{{stats.interviews}}</div>
-        </div>
-        <div class="stat-card">
-            <h3>Response Rate</h3>
-            <div class="stat-value">{{getResponseRate() | percent}}</div>
-        </div>
+<main class="container mx-auto px-4 py-8 max-w-6xl pt-12">
+  <!-- Error State -->
+  <div *ngIf="error" class="flex items-center justify-between bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm shadow">
+    <div class="flex items-center gap-2">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ error }}</span>
     </div>
+    <button class="flex items-center gap-1 border border-red-300 bg-white text-red-700 px-3 py-1 rounded hover:bg-red-700 hover:text-white transition" (click)="retryLoading()">
+      <i class="fas fa-sync"></i> Retry
+    </button>
+  </div>
 
-    <!-- Loading State -->
-    <div class="stats-grid" *ngIf="isLoading">
-        <div class="stat-card loading" *ngFor="let i of [1,2,3,4]">
-            <h3><div class="skeleton-text"></div></h3>
-            <div class="stat-value"><div class="skeleton-text"></div></div>
-        </div>
+  <!-- Stats Grid -->
+  <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center">
+      <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 mb-2">
+        <i class="fas fa-briefcase text-blue-600"></i>
+      </div>
+      <h3 class="text-xs font-semibold text-gray-500 mb-1 tracking-wide uppercase">Total Applications</h3>
+      <div class="text-3xl font-bold text-blue-700">{{stats.totalJobs}}</div>
     </div>
-
-    <!-- Quotas -->
-    <div class="quota-grid" *ngIf="isAdvancedAnalyticsEnabled && !isLoading">
-        <div class="quota-card">
-            <h3>Active Applications</h3>
-            <div class="quota-info">
-                <div class="quota-value">{{quotas.applications}}</div>
-                <div class="quota-label">remaining</div>
-            </div>
-            <div class="quota-upgrade" *ngIf="quotas.applications === 0">
-                <i class="fas fa-lock"></i>
-                <span>Upgrade to add more applications</span>
-            </div>
-        </div>
-        <div class="quota-card">
-            <h3>Saved Jobs</h3>
-            <div class="quota-info">
-                <div class="quota-value">{{quotas.saved}}</div>
-                <div class="quota-label">remaining</div>
-            </div>
-            <div class="quota-upgrade" *ngIf="quotas.saved === 0">
-                <i class="fas fa-lock"></i>
-                <span>Upgrade to save more jobs</span>
-            </div>
-        </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center">
+      <div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 mb-2">
+        <i class="fas fa-paper-plane text-green-600"></i>
+      </div>
+      <h3 class="text-xs font-semibold text-gray-500 mb-1 tracking-wide uppercase">Active Applications</h3>
+      <div class="text-3xl font-bold text-green-700">{{stats.appliedJobs}}</div>
     </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center">
+      <div class="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 mb-2">
+        <i class="fas fa-comments text-yellow-600"></i>
+      </div>
+      <h3 class="text-xs font-semibold text-gray-500 mb-1 tracking-wide uppercase">Interview Stage</h3>
+      <div class="text-3xl font-bold text-yellow-700">{{stats.interviews}}</div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center">
+      <div class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 mb-2">
+        <i class="fas fa-percentage text-indigo-600"></i>
+      </div>
+      <h3 class="text-xs font-semibold text-gray-500 mb-1 tracking-wide uppercase">Response Rate</h3>
+      <div class="text-3xl font-bold text-indigo-700">{{getResponseRate() | percent}}</div>
+    </div>
+  </div>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+    <div *ngFor="let i of [1,2,3,4]" class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center animate-pulse">
+      <div class="w-10 h-10 rounded-full bg-gray-200 mb-2"></div>
+      <h3 class="text-xs font-semibold text-gray-300 mb-1 w-24 h-4 bg-gray-200 rounded"></h3>
+      <div class="text-3xl font-bold text-gray-300 w-16 h-8 bg-gray-200 rounded"></div>
+    </div>
+  </div>
+
+  <!-- Quotas -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8" *ngIf="isAdvancedAnalyticsEnabled && !isLoading">
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-start">
+      <h3 class="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide flex items-center gap-2">
+        <i class="fas fa-bolt text-orange-400"></i> Active Applications
+      </h3>
+      <div class="flex items-baseline gap-2 mb-2">
+        <span class="text-2xl font-bold text-blue-700">{{quotas.applications}}</span>
+        <span class="text-xs text-gray-400">remaining</span>
+      </div>
+      <div *ngIf="quotas.applications === 0" class="flex items-center gap-2 mt-2 bg-orange-50 text-orange-700 px-3 py-1 rounded text-xs">
+        <i class="fas fa-lock"></i>
+        <span>Upgrade to add more applications</span>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-start">
+      <h3 class="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide flex items-center gap-2">
+        <i class="fas fa-bookmark text-purple-400"></i> Saved Jobs
+      </h3>
+      <div class="flex items-baseline gap-2 mb-2">
+        <span class="text-2xl font-bold text-purple-700">{{quotas.saved}}</span>
+        <span class="text-xs text-gray-400">remaining</span>
+      </div>
+      <div *ngIf="quotas.saved === 0" class="flex items-center gap-2 mt-2 bg-orange-50 text-orange-700 px-3 py-1 rounded text-xs">
+        <i class="fas fa-lock"></i>
+        <span>Upgrade to save more jobs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content: Activity & Interviews -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     <!-- Recent Activity -->
-    <div class="dashboard-content" *ngIf="!isLoading">
-        <section class="activity-section">
-            <h2><i class="fas fa-history"></i> Recent Activity</h2>
-            <div class="activity-list">
-                <div class="activity-item" *ngFor="let item of activity.slice(0, 10)">
-                    <div class="activity-icon" [ngClass]="{
-                        'interview': item.action.includes('INTERVIEWING'),
-                        'applied': item.action.includes('APPLIED'),
-                        'rejected': item.action.includes('REJECTED'),
-                        'offered': item.action.includes('OFFERED'),
-                        'saved': item.action.includes('WISHLIST') 
-                    }">
-                        <i class="fas" [ngClass]="{
-                            'fa-calendar-check': item.action.includes('Interview'),
-                            'fa-paper-plane': item.action.includes('Submitted') || item.action.includes('Applied'),
-                            'fa-times-circle': item.action.includes('Rejected'),
-                            'fa-check-circle': item.action.includes('Offered'),
-                            'fa-bookmark': item.action.includes('Saved') || item.action.includes('Wishlist'),
-                            'fa-pencil-alt': item.action.includes('Updated')
-                        }"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4>{{item.action | humanize}}</h4>
-                        <p><i class="fas fa-building text-muted"></i> {{item.position}} at {{item.company}}</p>
-                        <div class="activity-meta">
-                            <span class="activity-date"><i class="far fa-clock"></i> {{item.date | date:'MMM d, y'}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="activity.length === 0" class="no-activity">
-                    <p><i class="fas fa-info-circle"></i> No recent activity</p>
-                </div>
+    <section class="md:col-span-2">
+      <h2 class="flex items-center gap-2 text-lg font-bold text-gray-800 mb-4">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100"><i class="fas fa-history text-blue-600"></i></span>
+        Recent Activity
+      </h2>
+      <div class="space-y-4 max-h-[400px] overflow-y-auto">
+        <div *ngFor="let item of activity.slice(0, 10)" class="flex items-start bg-white rounded-xl shadow p-4 gap-4">
+          <div [ngClass]="{
+            'bg-green-500': item.action.includes('INTERVIEWING'),
+            'bg-blue-500': item.action.includes('APPLIED'),
+            'bg-red-500': item.action.includes('REJECTED'),
+            'bg-yellow-400': item.action.includes('OFFERED'),
+            'bg-purple-500': item.action.includes('WISHLIST')
+          }" class="flex items-center justify-center w-10 h-10 rounded-full text-white text-lg flex-shrink-0">
+            <i class="fas" [ngClass]="{
+              'fa-calendar-check': item.action.includes('Interview'),
+              'fa-paper-plane': item.action.includes('Submitted') || item.action.includes('Applied'),
+              'fa-times-circle': item.action.includes('Rejected'),
+              'fa-check-circle': item.action.includes('Offered'),
+              'fa-bookmark': item.action.includes('Saved') || item.action.includes('Wishlist'),
+              'fa-pencil-alt': item.action.includes('Updated')
+            }"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="text-base font-semibold text-gray-800 mb-1 truncate">{{item.action | humanize}}</h4>
+            <p class="text-sm text-gray-500 mb-1 truncate"><i class="fas fa-building mr-1"></i> {{item.position}} at {{item.company}}</p>
+            <div class="flex items-center gap-2 text-xs text-gray-400">
+              <i class="far fa-clock"></i> {{item.date | date:'MMM d, y'}}
             </div>
-        </section>
+          </div>
+        </div>
+        <div *ngIf="activity.length === 0" class="text-center py-8 text-gray-400 bg-gray-50 rounded-xl">
+          <i class="fas fa-info-circle"></i> No recent activity
+        </div>
+      </div>
+    </section>
 
-        <!-- Interviews -->
-        <section class="interviews-section">
-            <h2><i class="fas fa-calendar-alt"></i> Upcoming Interviews</h2>
-            <div class="interview-list" *ngIf="interviews.length > 0; else noInterviews">
-                <div class="interview-item" *ngFor="let interview of interviews.slice(0, 10)">
-                    <div class="interview-details">
-                        <h4>{{interview.position}}</h4>
-                        <p><i class="fas fa-building text-muted"></i> {{interview.company}}</p>
-                        <div class="interview-meta">
-                            <span class="interview-date"><i class="far fa-calendar"></i> {{interview.date | date:'MMM d, y'}}</span>
-                            <span class="interview-time"><i class="far fa-clock"></i> {{interview.time}}</span>
-                            <span class="interview-type"><i class="fas fa-video"></i> {{interview.type}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <ng-template #noInterviews>
-                <div class="no-interviews">
-                    <p><i class="fas fa-info-circle"></i> No upcoming interviews</p>
-                </div>
-            </ng-template>
-        </section>
-    </div>
+    <!-- Upcoming Interviews -->
+    <section>
+      <h2 class="flex items-center gap-2 text-lg font-bold text-gray-800 mb-4">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100"><i class="fas fa-calendar-alt text-indigo-600"></i></span>
+        Upcoming Interviews
+      </h2>
+      <div *ngIf="interviews.length > 0; else noInterviews" class="space-y-4 max-h-[400px] overflow-y-auto">
+        <div *ngFor="let interview of interviews.slice(0, 10)" class="bg-white rounded-xl shadow p-4">
+          <h4 class="text-base font-semibold text-gray-800 mb-1 truncate">{{interview.position}}</h4>
+          <p class="text-sm text-gray-500 mb-2 truncate"><i class="fas fa-building mr-1"></i> {{interview.company}}</p>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-full"><i class="far fa-calendar"></i> {{interview.date | date:'MMM d, y'}}</span>
+            <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-full"><i class="far fa-clock"></i> {{interview.time}}</span>
+            <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-full"><i class="fas fa-video"></i> {{interview.type}}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noInterviews>
+        <div class="text-center py-8 text-gray-400 bg-gray-50 rounded-xl">
+          <i class="fas fa-info-circle"></i> No upcoming interviews
+        </div>
+      </ng-template>
+    </section>
+  </div>
 </main>
