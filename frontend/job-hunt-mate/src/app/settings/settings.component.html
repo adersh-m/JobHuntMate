@@ -1,45 +1,57 @@
-<main class="settings-container">
-    <div class="settings-header">
-        <h1>Settings</h1>
-    </div>
-    
-    <div class="settings-sections">
-        <section class="settings-section">
-            <h2>Profile Settings</h2>
-            <div class="setting-item">
-                <label>Email Notifications</label>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="email-notifications" [(ngModel)]="settings.emailNotifications">
-                    <label for="email-notifications"></label>
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>Dark Mode</label>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="dark-mode" [(ngModel)]="settings.darkMode">
-                    <label for="dark-mode"></label>
-                </div>
-            </div>
-        </section>
-        
-        <section class="settings-section">
-            <h2>Account Settings</h2>
-            <div class="setting-item">
-                <label>Email Address</label>
-                <input type="email" placeholder="Enter your email" [(ngModel)]="settings.email">
-            </div>
-            <div class="setting-item">
-                <label>Time Zone</label>
-                <select [(ngModel)]="settings.timeZone">
-                    <option value="utc">UTC</option>
-                    <option value="est">EST</option>
-                    <option value="pst">PST</option>
-                </select>
-            </div>
-        </section>
-    </div>
-    
-    <div class="settings-actions">
-        <button class="save-btn" (click)="saveSettings()">Save Changes</button>
-    </div>
+<main class="max-w-2xl mx-auto px-4 py-10">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
+  </div>
+  <div class="space-y-8">
+    <section class="bg-white dark:bg-gray-900 rounded-lg shadow dark:shadow-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Profile Settings</h2>
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center justify-between">
+          <label class="text-gray-700 dark:text-gray-100" for="email-notifications">Email Notifications</label>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="email-notifications" [(ngModel)]="settings.emailNotifications" (ngModelChange)="saveSettings(false,true)" class="sr-only peer">
+            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-700 rounded-full peer peer-checked:bg-blue-600 dark:peer-checked:bg-blue-500 transition-all duration-200"></span>
+            <span class="absolute left-1 top-1 w-4 h-4 bg-white dark:bg-gray-200 rounded-full transition-all duration-200 peer-checked:translate-x-5"></span>
+          </label>
+        </div>
+        <div class="flex items-center justify-between">
+          <label class="text-gray-700 dark:text-gray-100" for="dark-mode">Dark Mode</label>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="dark-mode" [(ngModel)]="settings.darkMode" (ngModelChange)="saveSettings(true, false)" class="sr-only peer">
+            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-700 rounded-full peer peer-checked:bg-blue-600 dark:peer-checked:bg-blue-500 transition-all duration-200"></span>
+            <span class="absolute left-1 top-1 w-4 h-4 bg-white dark:bg-gray-200 rounded-full transition-all duration-200 peer-checked:translate-x-5"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+    <section class="bg-white dark:bg-gray-900 rounded-lg shadow dark:shadow-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Account Settings</h2>
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <label class="text-gray-700 dark:text-gray-100 mb-1 sm:mb-0">Email Address</label>
+          <input type="email" placeholder="Enter your email" [(ngModel)]="settings.email" class="w-full sm:w-80 px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <label class="text-gray-700 dark:text-gray-100 mb-1 sm:mb-0">Time Zone</label>
+          <select [(ngModel)]="settings.timeZone" class="w-full sm:w-80 px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded focus:ring-blue-500 focus:border-blue-500">
+            <option value="utc">UTC</option>
+            <option value="gmt">GMT</option>
+            <option value="est">EST (Eastern Time)</option>
+            <option value="cst">CST (Central Time)</option>
+            <option value="mst">MST (Mountain Time)</option>
+            <option value="pst">PST (Pacific Time)</option>
+            <option value="ist">IST (India Standard Time)</option>
+            <option value="cet">CET (Central European Time)</option>
+            <option value="bst">BST (British Summer Time)</option>
+            <option value="jst">JST (Japan Standard Time)</option>
+            <option value="aest">AEST (Australian Eastern Time)</option>
+            <option value="nzst">NZST (New Zealand Standard Time)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="flex justify-end mt-8">
+    <button class="px-6 py-2 rounded bg-blue-700 dark:bg-blue-800 text-white font-semibold hover:bg-blue-800 dark:hover:bg-blue-900 transition" (click)="saveSettings()">Save Changes</button>
+  </div>
 </main>

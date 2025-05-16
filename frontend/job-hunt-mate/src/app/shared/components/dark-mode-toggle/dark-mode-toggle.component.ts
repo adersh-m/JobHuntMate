@@ -1,5 +1,5 @@
 // dark-mode-toggle.component.ts
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../../core/services/theme.service';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -12,7 +12,12 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [CommonModule, FontAwesomeModule],
   template: `
     <button (click)="toggle()" [attr.aria-label]="(isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode')">
-      <fa-icon [icon]="isDark ? 'sun' : 'moon'"></fa-icon>
+      <fa-icon [icon]="isDark ? 'sun' : 'moon'" [ngClass]="{
+        'text-white': isDark && variant === 'auth',
+        'text-yellow-400': isDark && variant !== 'auth',
+        'text-gray-700': !isDark && variant !== 'auth',
+        'text-gray-100': !isDark && variant === 'auth'
+      }"></fa-icon>
     </button>
   `,
   styles: [`
@@ -26,6 +31,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   `]
 })
 export class DarkModeToggleComponent {
+  @Input() variant: 'auth' | 'default' = 'default';
   isDark = false;
 
   constructor(private themeService: ThemeService, library: FaIconLibrary) {

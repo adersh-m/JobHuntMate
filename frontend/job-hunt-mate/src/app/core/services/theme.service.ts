@@ -23,6 +23,11 @@ export class ThemeService {
     this.applyTheme(isDark);
   }
 
+  setTheme(isDark: boolean): void {
+    this.darkMode.next(isDark);
+    this.applyTheme(isDark);
+  }
+
   private applyTheme(isDark: boolean): void {
     const body = document.body;
     body.classList.toggle('dark', isDark);
