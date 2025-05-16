@@ -26,4 +26,3 @@ jobs:
       run: |
         cd frontend/job-hunt-mate
         npm install
-        npx webpack
