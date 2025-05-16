@@ -1,51 +1,70 @@
-<div class="auth-container">
-    <div class="auth-card">
-        <h2>Welcome Back</h2>
-        <p class="auth-subtitle">Sign in to continue to JobTracker</p>
-        
-        <div class="error-banner" *ngIf="loginError">
-            {{ loginError }}
+<div class="flex flex-col md:flex-row h-screen">
+  <!-- Left Column: Image -->
+  <div class="md:w-1/2 w-full h-48 sm:h-64 md:h-full flex items-stretch hidden md:block flex-shrink-0">
+    <app-auth-illustration imageName="brand-image.png"></app-auth-illustration>
+  </div>
+
+  <!-- Right Column: Login Form -->
+  <div class="w-full flex items-center justify-center px-6 py-12 bg-white min-h-screen">
+    <div class="w-full max-w-md space-y-6">
+      <div *ngIf="loginError" class="bg-red-100 text-red-700 p-3 rounded text-sm">
+        <i class="fas fa-exclamation-circle mr-2"></i>{{ loginError }}
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800">Welcome back</h2>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <div>
+          <label for="usernameOrEmail" class="block text-sm font-medium text-gray-700">Username or Email</label>
+          <input type="text" id="usernameOrEmail" formControlName="usernameOrEmail"
+            placeholder="Enter your username or email"
+            class="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+            [class.error]="isFieldInvalid('usernameOrEmail')" autocomplete="off" />
+          <p class="text-sm text-red-600 mt-1" *ngIf="isFieldInvalid('usernameOrEmail')">
+            <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('usernameOrEmail') }}
+          </p>
         </div>
-        
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <label for="usernameOrEmail">Username or Email</label>
-                <input 
-                    type="text" 
-                    id="usernameOrEmail" 
-                    formControlName="usernameOrEmail" 
-                    placeholder="Enter your username or email"
-                    [class.error]="isFieldInvalid('usernameOrEmail')"
-                />
-                <div class="error-message" *ngIf="isFieldInvalid('usernameOrEmail')">
-                    {{ getErrorMessage('usernameOrEmail') }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    formControlName="password" 
-                    placeholder="Enter your password"
-                    [class.error]="isFieldInvalid('password')"
-                />
-                <div class="error-message" *ngIf="isFieldInvalid('password')">
-                    {{ getErrorMessage('password') }}
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" [disabled]="loginForm.invalid || isLoading">
-                    <span *ngIf="isLoading" class="spinner"></span>
-                    {{ isLoading ? 'Signing in...' : 'Sign In' }}
-                </button>
-            </div>
-        </form>
-
-        <div class="auth-footer">
-            <p>Don't have an account? <a routerLink="/register">Sign up</a></p>
+        <div class="relative">
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+            placeholder="Enter your password"
+            class="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
+            [class.error]="isFieldInvalid('password')" autocomplete="current-password" />
+          <button type="button" class="absolute right-3 top-9 bg-transparent border-none text-gray-400 text-lg focus:outline-none"
+            (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+          </button>
+          <p class="text-sm text-red-600 mt-1" *ngIf="isFieldInvalid('password')">
+            <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('password') }}
+          </p>
         </div>
+        <div class="flex items-center justify-between">
+          <label class="flex items-center">
+            <input type="checkbox" formControlName="rememberMe" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+            <span class="ml-2 text-sm text-gray-900">Remember me</span>
+          </label>
+          <a routerLink="/forgot-password" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+        </div>
+        <button type="submit" [disabled]="isLoading" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-semibold transition flex items-center justify-center">
+          <span *ngIf="isLoading" class="spinner mr-2"></span>
+          {{ isLoading ? 'Signing in...' : 'Sign In' }}
+        </button>
+        <div class="flex items-center my-4">
+          <div class="flex-grow border-t border-gray-200"></div>
+          <span class="mx-4 text-gray-500 text-sm">or sign in with</span>
+          <div class="flex-grow border-t border-gray-200"></div>
+        </div>
+        <div class="flex space-x-4">
+          <button type="button" class="flex-1 border border-gray-300 rounded px-4 py-2 flex items-center justify-center hover:bg-gray-50">
+            <i class="fab fa-github w-5 h-5 mr-2"></i> GitHub
+          </button>
+          <button type="button" class="flex-1 border border-gray-300 rounded px-4 py-2 flex items-center justify-center hover:bg-gray-50">
+            <i class="fab fa-linkedin-in w-5 h-5 mr-2"></i> LinkedIn
+          </button>
+        </div>
+        <p class="text-sm text-center text-gray-600 mt-4">
+          Don’t have an account?
+          <a routerLink="/register" class="text-blue-600 hover:underline">Sign up</a>
+        </p>
+      </form>
     </div>
+  </div>
 </div>

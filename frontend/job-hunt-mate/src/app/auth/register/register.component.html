@@ -1,79 +1,78 @@
-<div class="auth-container">
-    <div class="auth-card">
-        <h2>Create Account</h2>
-        <p class="auth-subtitle">Join JobTracker to manage your job applications</p>
-        
-        <div class="error-banner" *ngIf="registrationError">
-            {{ registrationError }}
+<div class="flex flex-col md:flex-row h-screen">
+  <!-- Left Column: Image -->
+  <div class="md:w-1/2 w-full h-48 sm:h-64 md:h-full flex items-stretch hidden md:block flex-shrink-0">
+    <app-auth-illustration imageName="brand-image.png"></app-auth-illustration>
+  </div>
+
+  <!-- Right Column: Registration Form -->
+  <div class="md:w-1/2 w-full flex items-center justify-center px-6 py-12 bg-white min-h-screen">
+    <div class="w-full max-w-md space-y-6">
+      <div *ngIf="registrationError" class="bg-red-100 text-red-700 p-3 rounded text-sm">
+        <i class="fas fa-exclamation-circle mr-2"></i>{{ registrationError }}
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800">Create your account</h2>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700">Full Name</label>
+          <input type="text" id="username" formControlName="username" placeholder="Enter your full name"
+            class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring-blue-500 focus:border-blue-500"
+            [class.error]="isFieldInvalid('username')" autocomplete="name" />
+          <p class="text-sm text-red-600 mt-1" *ngIf="isFieldInvalid('username')">
+            <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('username') }}
+          </p>
         </div>
-        
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <label for="username">Full Name</label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    formControlName="username" 
-                    placeholder="Enter your full name"
-                    [class.error]="isFieldInvalid('username')"
-                />
-                <div class="error-message" *ngIf="isFieldInvalid('username')">
-                    {{ getErrorMessage('username') }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    formControlName="email" 
-                    placeholder="Enter your email"
-                    [class.error]="isFieldInvalid('email')"
-                />
-                <div class="error-message" *ngIf="isFieldInvalid('email')">
-                    {{ getErrorMessage('email') }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    formControlName="password" 
-                    placeholder="Create a password"
-                    [class.error]="isFieldInvalid('password')"
-                />
-                <div class="error-message" *ngIf="isFieldInvalid('password')">
-                    {{ getErrorMessage('password') }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    formControlName="confirmPassword" 
-                    placeholder="Confirm your password"
-                    [class.error]="isFieldInvalid('confirmPassword')"
-                />
-                <div class="error-message" *ngIf="isFieldInvalid('confirmPassword')">
-                    {{ getErrorMessage('confirmPassword') }}
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" [disabled]="registerForm.invalid || isLoading">
-                    <span *ngIf="isLoading" class="spinner"></span>
-                    {{ isLoading ? 'Creating account...' : 'Create Account' }}
-                </button>
-            </div>
-        </form>
-
-        <div class="auth-footer">
-            <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+          <input type="email" id="email" formControlName="email" placeholder="Enter your email"
+            class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring-blue-500 focus:border-blue-500"
+            [class.error]="isFieldInvalid('email')" autocomplete="email" />
+          <p class="text-sm text-red-600 mt-1" *ngIf="isFieldInvalid('email')">
+            <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('email') }}
+          </p>
         </div>
+        <div class="relative">
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" placeholder="Create a password"
+            class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring-blue-500 focus:border-blue-500 pr-10"
+            [class.error]="isFieldInvalid('password')" autocomplete="new-password" />
+          <button type="button" class="absolute right-3 top-9 bg-transparent border-none text-gray-400 text-lg focus:outline-none"
+            (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+          </button>
+          <p class="text-sm text-red-600 mt-1" *ngIf="isFieldInvalid('password')">
+            <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('password') }}
+          </p>
+        </div>
+        <div class="relative">
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <input [type]="showPassword ? 'text' : 'password'" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm your password"
+            class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring-blue-500 focus:border-blue-500 pr-10"
+            [class.error]="isFieldInvalid('confirmPassword')" autocomplete="new-password" />
+          <p class="text-sm text-red-600 mt-1" *ngIf="isFieldInvalid('confirmPassword')">
+            <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('confirmPassword') }}
+          </p>
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="agreeToTerms" formControlName="agreeToTerms" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+          <label for="agreeToTerms" class="ml-2 text-sm text-gray-700">
+            I agree to the
+            <a routerLink="/tnc" target="_blank" class="text-blue-600 hover:underline">Terms & Conditions</a>
+            and
+            <a routerLink="/privacy" target="_blank" class="text-blue-600 hover:underline">Privacy Policy</a>
+          </label>
+        </div>
+        <p class="text-sm text-red-600 mt-1" *ngIf="isFieldInvalid('agreeToTerms')">
+          <i class="fas fa-exclamation-circle"></i> You must agree to the Terms & Conditions and Privacy Policy
+        </p>
+        <button type="submit" [disabled]="registerForm.invalid || isLoading" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-semibold transition flex items-center justify-center">
+          <span *ngIf="isLoading" class="spinner mr-2"></span>
+          {{ isLoading ? 'Creating account...' : 'Create Account' }}
+        </button>
+        <p class="text-sm text-center text-gray-600 mt-4">
+          Already have an account?
+          <a routerLink="/login" class="text-blue-600 hover:underline">Sign in</a>
+        </p>
+      </form>
     </div>
+  </div>
 </div>

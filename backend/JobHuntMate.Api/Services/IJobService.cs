@@ -5,10 +5,15 @@ namespace JobHuntMate.Api.Services
 {
     public interface IJobService
     {
-        Task<List<Job>> GetAllJobsAsync();
-        Task<Job> GetJobById(Guid id);
-        Task<Job> CreateJobAsync(JobDto dto);
-        Task<Job> UpdateJobAsync(Guid id, JobDto updatedJobDt);
+        Task<List<JobApplicationDto>> GetAllJobsAsync(Guid userId);
+        Task<JobApplicationDto> GetJobById(Guid userId,Guid id);
+        Task<JobApplicationDto> CreateJobAsync(JobApplicationDto dto);
+        Task<JobApplicationDto> UpdateJobAsync(Guid id, JobApplicationDto updatedJobDt);
         Task<bool> DeleteJobAsync(Guid id);
+
+
+        Task<List<Interview>> GetInterviews(Guid id);
+        Task<Stats> GetStats(Guid id);
+        Task<List<ActivityItem>> GetActivity(Guid id);
     }
 }

@@ -2,18 +2,12 @@
     <div class="sidebar-header">
         <span class="sidebar-title">Menu</span>
     </div>
-    <div class="nav-links">
-        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
-            <i class="fas fa-chart-line"></i>
-            <span>Dashboard</span>
-        </a>
-        <a class="nav-item" routerLink="/jobs" routerLinkActive="active">
-            <i class="fas fa-briefcase"></i>
-            <span>Jobs</span>
-        </a>
-        <a class="nav-item" routerLink="/settings" routerLinkActive="active">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
+    <div class="nav-list">
+        <a class="nav-item" *ngFor="let item of menuItems"
+           [routerLink]="item.route"
+           routerLinkActive="active-link">
+            <i class="fas fa-{{item.icon}}"></i>
+            <span>{{item.label}}</span>
         </a>
     </div>
 </nav>

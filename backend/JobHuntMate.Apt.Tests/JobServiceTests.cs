@@ -14,6 +14,7 @@ namespace JobHuntMate.Api.Tests
     {
         private readonly ApplicationDbContext _context;
         private readonly JobService _jobService;
+        private readonly Guid userId = new Guid("FAD236E4-C9B8-44A0-B42A-A6BEBAB0EA31");
 
         public JobServiceTests()
         {
@@ -29,9 +30,9 @@ namespace JobHuntMate.Api.Tests
         public async Task GetAllJobsAsync_ShouldReturnAllJobs()
         {
             // Arrange
-            var jobs = new List<Job>
+            var jobs = new List<JobApplication>
             {
-                new Job
+                new JobApplication
                 {
                     Id = Guid.NewGuid(),
                     Title = "Job1",
@@ -39,10 +40,10 @@ namespace JobHuntMate.Api.Tests
                     Location = "NYC",
                     JobType = "FULL_TIME",
                     Status = "APPLIED",
-                    ApplicationDate = DateTime.UtcNow,
+                    DateApplied = DateTime.UtcNow,
                     LastUpdateDate = DateTime.UtcNow
                 },
-                new Job
+                new JobApplication
                 {
                     Id = Guid.NewGuid(),
                     Title = "Job2",
@@ -50,17 +51,17 @@ namespace JobHuntMate.Api.Tests
                     Location = "Remote",
                     JobType = "PART_TIME",
                     Status = "WISHLIST",
-                    ApplicationDate = DateTime.UtcNow,
+                    DateApplied = DateTime.UtcNow,
                     LastUpdateDate = DateTime.UtcNow
                 }
             };
 
 
-            _context.Jobs.AddRange(jobs);
+            _context.JobApplications.AddRange(jobs);
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _jobService.GetAllJobsAsync();
+            var result = await _jobService.GetAllJobsAsync(userId);
 
             // Assert
             Assert.Equal(2, result.Count);
@@ -70,17 +71,17 @@ namespace JobHuntMate.Api.Tests
         public async Task CreateJobAsync_ShouldAddJobToDatabase()
         {
             // Arrange
-            var jobDto = new JobDto
+            var jobDto = new JobApplicationDto
             {
-                Title = "New Job",
+                JobTitle = "New Job",
                 Company = "New Company",
                 Location = "Location",
                 Description = "Some description",
                 Salary = "1000",
                 JobType = "FULL_TIME",
                 Status = "APPLIED",
-                ApplicationDate = DateTime.UtcNow,
-                LastUpdateDate = DateTime.UtcNow
+                DateApplied = DateTime.UtcNow,
+                LastUpdated = DateTime.UtcNow
             };
 
             // Act
@@ -88,15 +89,15 @@ namespace JobHuntMate.Api.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(jobDto.Title, result.Title);
-            Assert.Equal(1, await _context.Jobs.CountAsync());
+            Assert.Equal(jobDto.JobTitle, result.JobTitle);
+            Assert.Equal(1, await _context.JobApplications.CountAsync());
         }
 
         [Fact]
         public async Task DeleteJobAsync_ShouldRemoveJobFromDatabase()
         {
             // Arrange
-            var job = new Job
+            var job = new JobApplication
             {
                 Id = Guid.NewGuid(),
                 Title = "To Delete",
@@ -104,11 +105,11 @@ namespace JobHuntMate.Api.Tests
                 Location = "NYC",
                 JobType = "FULL_TIME",
                 Status = "APPLIED",
-                ApplicationDate = DateTime.UtcNow,
+                DateApplied = DateTime.UtcNow,
                 LastUpdateDate = DateTime.UtcNow
             };
 
-            _context.Jobs.Add(job);
+            _context.JobApplications.Add(job);
             await _context.SaveChangesAsync();
 
             // Act
@@ -116,29 +117,19 @@ namespace JobHuntMate.Api.Tests
 
             // Assert
             Assert.True(result);
-            Assert.Null(await _context.Jobs.FindAsync(job.Id));
+            Assert.Null(await _context.JobApplications.FindAsync(job.Id));
         }
 
         [Fact]
         public async Task GetJobById_ShouldReturnCorrectJob()
         {
             // Arrange
-            var job = new Job
-            {
-                Id = Guid.NewGuid(),
-                Title = "Find Me",
-                Company = "Company1",
-                Location = "NYC",
-                JobType = "FULL_TIME",
-                Status = "APPLIED",
-                ApplicationDate = DateTime.UtcNow,
-                LastUpdateDate = DateTime.UtcNow
-            };
-            _context.Jobs.Add(job);
+            var job = new JobApplication { Id = Guid.NewGuid(), Title = "Find Me", Company = "Company1", Location = "NYC", JobType = "FULL_TIME", Status = "APPLIED", DateApplied = DateTime.UtcNow, LastUpdateDate = DateTime.UtcNow };
+            _context.JobApplications.Add(job);
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _jobService.GetJobById(job.Id);
+            var result = await _jobService.GetJobById(userId,job.Id);
 
             // Assert
             Assert.NotNull(result);
@@ -149,32 +140,22 @@ namespace JobHuntMate.Api.Tests
         public async Task UpdateJobAsync_ShouldModifyJob()
         {
             // Arrange
-            var job = new Job
-            {
-                Id = Guid.NewGuid(),
-                Title = "Old Title",
-                Company = "Old Company",
-                Location = "NYC",
-                JobType = "WISHLIST",
-                Status = "APPLIED",
-                ApplicationDate = DateTime.UtcNow,
-                LastUpdateDate = DateTime.UtcNow
-            };
+            var job = new JobApplication { Id = Guid.NewGuid(), Title = "Old Title", Company = "Old Company", Location = "NYC", JobType = "WISHLIST", Status = "APPLIED", DateApplied = DateTime.UtcNow, LastUpdateDate = DateTime.UtcNow };
 
-            _context.Jobs.Add(job);
+            _context.JobApplications.Add(job);
             await _context.SaveChangesAsync();
 
-            var updatedDto = new JobDto
+            var updatedDto = new JobApplicationDto
             {
-                Title = "Updated Title",
+                JobTitle = "Updated Title",
                 Company = "New Company",
                 Description = "New Description",
                 Location = "Remote",
                 Salary = "2000",
                 JobType = "PART_TIME",
                 Status = "INTERVIEWING",
-                ApplicationDate = DateTime.UtcNow,
-                LastUpdateDate = DateTime.UtcNow
+                DateApplied = DateTime.UtcNow,
+                LastUpdated = DateTime.UtcNow
             };
 
             // Act
@@ -182,7 +163,7 @@ namespace JobHuntMate.Api.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("Updated Title", result.Title);
+            Assert.Equal("Updated Title", result.JobTitle);
             Assert.Equal("New Company", result.Company);
         }
     }

@@ -23,12 +23,21 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "types": ["cypress"],
+    "baseUrl": "./",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@env/*": ["src/environments/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "include": [
+    "**/*.ts",
+  ]
 }

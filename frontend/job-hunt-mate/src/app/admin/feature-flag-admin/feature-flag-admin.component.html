@@ -1,0 +1,33 @@
+<div class="feature-flag-admin">
+  <header class="admin-header">
+    <h1>Feature Flag Management</h1>
+    <div class="admin-actions">
+      <button class="enable-all-btn" (click)="enableAllFeatures()">
+        <i class="fas fa-toggle-on"></i>
+        Enable All Features
+      </button>
+      <button class="disable-all-btn" (click)="disableAllFeatures()">
+        <i class="fas fa-toggle-off"></i>
+        Disable All Features
+      </button>
+    </div>
+  </header>
+
+  <div class="feature-list" *ngIf="featureFlags$ | async as flags">
+    <div class="feature-item" *ngFor="let flag of objectKeys(flags)">
+      <div class="feature-info">
+        <h3>{{formatFlagName(flag)}}</h3>
+        <p class="feature-description">{{getFeatureDescription(flag)}}</p>
+      </div>
+      <div class="feature-toggle">
+        <label class="switch">
+          <input type="checkbox"
+                 [checked]="flags[flag]"
+                 (change)="toggleFeature(flag, flags[flag])">
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-status">{{flags[flag] ? 'Enabled' : 'Disabled'}}</span>
+      </div>
+    </div>
+  </div>
+</div>

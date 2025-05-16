@@ -1,4 +1,4 @@
-<div class="content" (click)="closeAllMenus()">
+<div class="content">
     <div class="content-header">
         <h1 class="page-title">My Job Applications</h1>
         <button class="add-btn" (click)="openAddJobForm()">+ Add Job</button>
@@ -20,9 +20,9 @@
                 <td colspan="6" class="no-jobs">No jobs found</td>
             </tr>
             <tr *ngFor="let job of displayedJobs">
-                <td title={{job.title}}>{{job.title}}</td>
+                <td title={{job.jobTitle}}>{{job.jobTitle}}</td>
                 <td>{{job.company}}</td>
-                <td>{{job.applicationDate| date:'dd/MM/yyyy'}}</td>
+                <td>{{job.dateApplied| date:'dd/MM/yyyy'}}</td>
                 <td>{{ job.jobType | enumLabel:'jobType' }}</td>
                 <td><span class="status-badge" [ngClass]="{
                     'status-wishlist': job.status === 'WISHLIST', 
@@ -32,12 +32,7 @@
                     'status-rejected': job.status === 'REJECTED'
                 }">{{ job.status | enumLabel:'status' }}</span></td>
                 <td class="action-cell">
-                    <button class="action-btn" (click)="$event.stopPropagation(); toggleMenu(job.id)">⋯</button>
-                    <div class="action-menu" *ngIf="openMenuId === job.id">
-                        <button (click)="$event.stopPropagation(); editJob(job)">Edit</button>
-                        <button (click)="$event.stopPropagation(); deleteJob(job.id)"
-                            class="delete-action">Delete</button>
-                    </div>
+                    <button class="view-btn" (click)="viewJob(job?.id ?? '')">View</button>
                 </td>
             </tr>
         </tbody>
@@ -50,12 +45,11 @@
     </div>
 </div>
 
-<app-add-job-modal [job]="selectedJob"
-*ngIf="showModal"
-(onSave)="onSaveJob($event)"
-(onCancel)="showModal = false">
-</app-add-job-modal>
-
-<app-confirm-modal [visible]="showDeleteConfirm" message="Do you really want to delete this job?"
-    confirmText="Yes, Delete" cancelText="Cancel" (onConfirm)="confirmDelete()"
-    (onCancel)="cancelDelete()"></app-confirm-modal>
+<app-confirm-modal 
+    [visible]="showDeleteConfirm" 
+    message="Do you really want to delete this job?" 
+    confirmText="Yes, Delete" 
+    cancelText="Cancel" 
+    (onConfirm)="confirmDelete()" 
+    (onCancel)="cancelDelete()">
+</app-confirm-modal>

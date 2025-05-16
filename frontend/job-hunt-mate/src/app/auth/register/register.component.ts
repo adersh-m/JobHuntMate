@@ -1,43 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
+import { ErrorHandlingService } from '../../core/services/error-handling.service';
+import { AuthIllustrationComponent } from '../../shared/auth-illustration.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AuthIllustrationComponent],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   isLoading = false;
   registrationError: string | null = null;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private errorHandler: ErrorHandlingService
+  ) {}  
 
   ngOnInit() {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
+      confirmPassword: ['', [Validators.required]],
+      agreeToTerms: [false, [Validators.requiredTrue]]
+    }, { validators: this.passwordMatchValidator.bind(this) });
   }
 
-  passwordMatchValidator(control: AbstractControl) {
+  passwordMatchValidator(control: AbstractControl): { mismatch: true } | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
     
     if (!password || !confirmPassword) return null;
-    
-    return password.value === confirmPassword.value ? null : { mismatch: true };
+
+    const match = password.value === confirmPassword.value;
+    return match ? null : { mismatch: true };
   }
 
   getErrorMessage(fieldName: string): string {
@@ -70,7 +77,7 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.registerForm.valid) {
+    if (this.registerForm.valid && !this.registerForm.hasError('mismatch')) {
       this.isLoading = true;
       this.registrationError = null;
       
@@ -78,10 +85,11 @@ export class RegisterComponent implements OnInit {
       
       this.authService.register(registrationData).subscribe({
         next: () => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          this.registrationError = error.message || 'Registration failed. Please try again.';
+          // Always use error handler for user-friendly message
+          this.registrationError = this.errorHandler.handleError(error, { suppressToast: true });
           this.isLoading = false;
         }
       });

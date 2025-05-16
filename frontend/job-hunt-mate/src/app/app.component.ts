@@ -1,19 +1,42 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './core/services/auth.service';
+import { NotificationComponent } from './shared/components/notification/notification.component';
+import { LoaderComponent } from './shared/components/loader/loader.component';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, SidebarComponent, RouterOutlet],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    HeaderComponent,
+    SidebarComponent,
+    NotificationComponent,
+    LoaderComponent
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'job-hunt-mate';
+  public isAuthPage = false;
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService, private router: Router) {
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((event: any) => {
+      const url = event.urlAfterRedirects || event.url;
+      this.isAuthPage = [
+        '/login',
+        '/register',
+        '/forgot-password',
+        '/reset-password',
+        '/email-sent',
+        '/tnc',
+        '/privacy'
+      ].some(path => url.startsWith(path));
+    });
+  }
 }

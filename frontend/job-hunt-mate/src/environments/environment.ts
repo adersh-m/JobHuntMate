@@ -6,5 +6,12 @@ export const environment = {
     refreshTokenExpiryTime: 604800, // 1 week in seconds
     tokenKey: 'auth_token',
     refreshTokenKey: 'refresh_token'
+  },
+  featureFlags: {
+    enablePremiumFeatures: false,
+    enableAdvancedAnalytics: false,
+    enableCalendarIntegration: false,
+    enableMultipleResumes: false,
+    enableCustomization: false
   }
 };

@@ -1,0 +1,27 @@
+<div class="login-container">
+  <div class="login-card">
+    <img src="logo.svg" alt="Logo" class="logo" />
+    <h2 class="title">Forgot Username</h2>
+    <p class="subtitle">Enter your email address and we'll send you your username.</p>
+    <form [formGroup]="forgotUserForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-container">
+          <input type="email" id="email" formControlName="email" placeholder="Enter your email" [class.error]="isFieldInvalid('email')" autocomplete="email" />
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('email')">
+          <i class="fas fa-exclamation-circle"></i> {{ getErrorMessage('email') }}
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" [disabled]="forgotUserForm.invalid || isLoading" class="primary-btn">
+          <span *ngIf="isLoading" class="spinner"></span>
+          {{ isLoading ? 'Sending...' : 'Send Username' }}
+        </button>
+      </div>
+    </form>
+    <div class="signup">
+      Remembered your username? <a routerLink="/login" class="signup-link">Sign In</a>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 ﻿using JobHuntMate.Api.Data;
 using JobHuntMate.Api.DTOs;
+using JobHuntMate.Api.Mappings;
 using JobHuntMate.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,83 +15,146 @@ namespace JobHuntMate.Api.Services
             _context = context;
         }       
 
-        public async Task<List<Job>> GetAllJobsAsync()
+        public async Task<List<JobApplicationDto>> GetAllJobsAsync(Guid userId)
         {
-            return await _context.Jobs.ToListAsync();
+            //return dto instead of model
+            var jobs = await _context.JobApplications.Where(u => u.UserId == userId).ToListAsync();
+            return JobApplicationMapper.ToDtoList(jobs);
         }
 
-        public async Task<Job> CreateJobAsync(JobDto dto)
+        public async Task<JobApplicationDto> CreateJobAsync(JobApplicationDto dto)
         {
-            var job = new Job
+            // wrap in try-catch block
+            var job = new JobApplication()
             {
-                Id = Guid.NewGuid(),
-                Title = dto.Title,
+                Id = dto.Id ?? Guid.NewGuid(),
+                UserId = dto.UserId,
+                Title = dto.JobTitle,
                 Company = dto.Company,
                 Location = dto.Location,
-                Description = dto.Description,
-                Salary = dto.Salary,
                 JobType = dto.JobType,
                 Status = dto.Status,
-                ApplicationDate = dto.ApplicationDate,
-                LastUpdateDate = dto.LastUpdateDate
+                Salary = dto.Salary,
+                Description = dto.Description,
+                DateApplied = dto.DateApplied,
+                InterviewDate = dto.InterviewDate,
+                LastUpdateDate = dto.LastUpdated,
+                InterviewMode = dto.InterviewMode,
+                Notes = dto.Notes,
+                ResumeLink = dto.ResumeLink,
+                LastUpdated = DateTime.UtcNow
             };
 
-            _context.Jobs.Add(job);
-            await _context.SaveChangesAsync();
-            return job;
+            try
+            {
+                _context.JobApplications.Add(job);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+            return JobApplicationMapper.ToDto(job);
         }
 
         public async Task<bool> DeleteJobAsync(Guid id)
         {
-            var job = await _context.Jobs.FindAsync(id);
+            var job = await _context.JobApplications.FindAsync(id);
             if (job == null) return false;
 
-            _context.Jobs.Remove(job);
+            _context.JobApplications.Remove(job);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<Job> GetJobById(Guid id)
+        public async Task<JobApplicationDto> GetJobById(Guid userId,Guid id)
         {
-            var job = await _context.Jobs.FindAsync(id);
-            if(job == null)
+            var job = await _context.JobApplications.Where(s => s.UserId == userId && s.Id == id).FirstOrDefaultAsync(); 
+            if (job == null)
             {
                 throw new Exception("Job not found");
             }
 
-            return job;
+            return JobApplicationMapper.ToDto(job);
         }
 
-        public async Task<Job> UpdateJobAsync(Guid id, JobDto updatedJobDto)
+        public async Task<JobApplicationDto> UpdateJobAsync(Guid id, JobApplicationDto updatedJobDto)
         {
-            var existingJob = await _context.Jobs.FindAsync(id);
+            var existingJob = await _context.JobApplications.FindAsync(id);
             if (existingJob == null) return null;
 
-            existingJob.Title = updatedJobDto.Title;
+            existingJob.Title = updatedJobDto.JobTitle;
+            existingJob.Description = updatedJobDto.Description;
+            existingJob.ResumeLink = updatedJobDto.ResumeLink;
+            existingJob.Notes = updatedJobDto.Notes;
+            existingJob.InterviewDate = updatedJobDto.InterviewDate;
+            existingJob.InterviewMode = updatedJobDto.InterviewMode;
+            existingJob.Salary = updatedJobDto.Salary;
             existingJob.Company = updatedJobDto.Company;
             existingJob.Location = updatedJobDto.Location;
             existingJob.Description = updatedJobDto.Description;
             existingJob.Salary = updatedJobDto.Salary;
             existingJob.JobType = updatedJobDto.JobType;
             existingJob.Status = updatedJobDto.Status;
-            existingJob.ApplicationDate = updatedJobDto.ApplicationDate;
+            existingJob.DateApplied = updatedJobDto.DateApplied;
             existingJob.LastUpdateDate = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
-            return new Job
+            return JobApplicationMapper.ToDto(existingJob);
+        }
+
+        public async Task<List<Interview>> GetInterviews(Guid userId)
+        {
+            var upcomingInterviews = await _context.JobApplications
+                .Where(j => j.UserId == userId && j.InterviewDate >= DateTime.UtcNow)
+                .OrderBy(j => j.InterviewDate)
+                .ToListAsync();
+
+            // return dummy data
+            return upcomingInterviews.Select(u => new Interview()
             {
-                Id = existingJob.Id,
-                Title = existingJob.Title,
-                Company = existingJob.Company,
-                Location = existingJob.Location,
-                Description = existingJob.Description,
-                Salary = existingJob.Salary,
-                JobType = existingJob.JobType,
-                Status = existingJob.Status,
-                ApplicationDate = existingJob.ApplicationDate,
-                LastUpdateDate = existingJob.LastUpdateDate
+                Company = u.Company,
+                Position = u.Title,
+                Date = u.InterviewDate.HasValue ? u.InterviewDate.Value.ToString("yyyy-MM-dd") : "", // Fix for CS0029
+                Time = u.InterviewDate.HasValue ? u.InterviewDate.Value.ToString("hh:mm tt") : "",
+                Type = u.InterviewMode
+            }).ToList();
+        }
+
+        public async Task<Stats> GetStats(Guid userId)
+        {
+            var jobs = await _context.JobApplications.Where(j => j.UserId == userId).ToListAsync();
+
+            // return dummy data
+            var stats = new Stats
+            {
+                TotalJobs = jobs.Count,
+                AppliedJobs = jobs.Count(j => (j.Status == "APPLIED" || j.Status == "INTERVIEWING")),
+                Interviews = jobs.Count(j =>  j.Status == "INTERVIEWING"),
+                Offers = jobs.Count(j => j.Status == "APPLIED"),
+                Rejections = jobs.Count(j => j.Status == "REJECTED")
             };
+
+            return stats;
+        }
+
+        public async Task<List<ActivityItem>> GetActivity(Guid userId)
+        {
+            var recentActivity = await _context.JobApplications
+                .Where(j => j.UserId == userId)
+                .OrderByDescending(j => j.LastUpdated)
+                .Take(5)
+                .ToListAsync();
+
+            // return dummy data
+            return recentActivity.Select(r => new ActivityItem()
+            {
+                Action =r.Status,
+                Company = r.Company,
+                Position = r.Title,
+                Date = r.InterviewDate.HasValue ? r.InterviewDate.Value.ToString("yyyy-MM-dd") : "",
+            }).ToList();
         }
     }
 }

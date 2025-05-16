@@ -1,67 +1,120 @@
 <main class="dashboard-container">
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Total Applications</h3>
-            <div class="stat-value">{{applicationStats.total}}</div>
+    <!-- Error State -->
+    <div class="error-banner" *ngIf="error">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ error }}
+        <button class="retry-btn" (click)="retryLoading()">
+            <i class="fas fa-sync"></i> Retry
+        </button>
+    </div>    <!-- Stats Grid -->
+    <div class="stats-grid" *ngIf="!isLoading">
+        <div class="stat-card">            <h3>Total Applications</h3>
+            <div class="stat-value">{{stats.totalJobs}}</div>
         </div>
         <div class="stat-card">
             <h3>Active Applications</h3>
-            <div class="stat-value">{{applicationStats.active}}</div>
+            <div class="stat-value">{{stats.appliedJobs}}</div>
         </div>
         <div class="stat-card">
             <h3>Interview Stage</h3>
-            <div class="stat-value">{{applicationStats.interviewing}}</div>
+            <div class="stat-value">{{stats.interviews}}</div>
         </div>
         <div class="stat-card">
             <h3>Response Rate</h3>
-            <div class="stat-value">{{(applicationStats.interviewing + applicationStats.rejected) / applicationStats.total | percent}}</div>
+            <div class="stat-value">{{getResponseRate() | percent}}</div>
         </div>
     </div>
 
-    <div class="dashboard-content">
+    <!-- Loading State -->
+    <div class="stats-grid" *ngIf="isLoading">
+        <div class="stat-card loading" *ngFor="let i of [1,2,3,4]">
+            <h3><div class="skeleton-text"></div></h3>
+            <div class="stat-value"><div class="skeleton-text"></div></div>
+        </div>
+    </div>
+
+    <!-- Quotas -->
+    <div class="quota-grid" *ngIf="isAdvancedAnalyticsEnabled && !isLoading">
+        <div class="quota-card">
+            <h3>Active Applications</h3>
+            <div class="quota-info">
+                <div class="quota-value">{{quotas.applications}}</div>
+                <div class="quota-label">remaining</div>
+            </div>
+            <div class="quota-upgrade" *ngIf="quotas.applications === 0">
+                <i class="fas fa-lock"></i>
+                <span>Upgrade to add more applications</span>
+            </div>
+        </div>
+        <div class="quota-card">
+            <h3>Saved Jobs</h3>
+            <div class="quota-info">
+                <div class="quota-value">{{quotas.saved}}</div>
+                <div class="quota-label">remaining</div>
+            </div>
+            <div class="quota-upgrade" *ngIf="quotas.saved === 0">
+                <i class="fas fa-lock"></i>
+                <span>Upgrade to save more jobs</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="dashboard-content" *ngIf="!isLoading">
         <section class="activity-section">
             <h2><i class="fas fa-history"></i> Recent Activity</h2>
             <div class="activity-list">
-                <div class="activity-item" *ngFor="let activity of recentActivity.slice(0, 10)">
+                <div class="activity-item" *ngFor="let item of activity.slice(0, 10)">
                     <div class="activity-icon" [ngClass]="{
-                        'interview': activity.action.includes('Interview'),
-                        'applied': activity.action.includes('Submitted'),
-                        'rejected': activity.action.includes('Rejected')
+                        'interview': item.action.includes('INTERVIEWING'),
+                        'applied': item.action.includes('APPLIED'),
+                        'rejected': item.action.includes('REJECTED'),
+                        'offered': item.action.includes('OFFERED'),
+                        'saved': item.action.includes('WISHLIST') 
                     }">
                         <i class="fas" [ngClass]="{
-                            'fa-calendar-check': activity.action.includes('Interview'),
-                            'fa-paper-plane': activity.action.includes('Submitted'),
-                            'fa-times-circle': activity.action.includes('Rejected')
+                            'fa-calendar-check': item.action.includes('Interview'),
+                            'fa-paper-plane': item.action.includes('Submitted') || item.action.includes('Applied'),
+                            'fa-times-circle': item.action.includes('Rejected'),
+                            'fa-check-circle': item.action.includes('Offered'),
+                            'fa-bookmark': item.action.includes('Saved') || item.action.includes('Wishlist'),
+                            'fa-pencil-alt': item.action.includes('Updated')
                         }"></i>
                     </div>
                     <div class="activity-details">
-                        <h4>{{activity.action}}</h4>
-                        <p>{{activity.position}} at {{activity.company}}</p>
+                        <h4>{{item.action | humanize}}</h4>
+                        <p><i class="fas fa-building text-muted"></i> {{item.position}} at {{item.company}}</p>
                         <div class="activity-meta">
-                            <span class="activity-date"><i class="far fa-clock"></i> {{activity.date}}</span>
+                            <span class="activity-date"><i class="far fa-clock"></i> {{item.date | date:'MMM d, y'}}</span>
                         </div>
                     </div>
+                </div>
+                <div *ngIf="activity.length === 0" class="no-activity">
+                    <p><i class="fas fa-info-circle"></i> No recent activity</p>
                 </div>
             </div>
         </section>
 
+        <!-- Interviews -->
         <section class="interviews-section">
-            <h2>Upcoming Interviews</h2>
-            <div class="interview-list" *ngIf="upcomingInterviews.length > 0; else noInterviews">
-                <div class="interview-item" *ngFor="let interview of upcomingInterviews.slice(0, 10)">
+            <h2><i class="fas fa-calendar-alt"></i> Upcoming Interviews</h2>
+            <div class="interview-list" *ngIf="interviews.length > 0; else noInterviews">
+                <div class="interview-item" *ngFor="let interview of interviews.slice(0, 10)">
                     <div class="interview-details">
-                        <h4>{{interview.company}}</h4>
-                        <p>{{interview.position}}</p>
+                        <h4>{{interview.position}}</h4>
+                        <p><i class="fas fa-building text-muted"></i> {{interview.company}}</p>
                         <div class="interview-meta">
-                            <span class="interview-date">{{interview.date}}</span>
-                            <span class="interview-time">{{interview.time}}</span>
-                            <span class="interview-type">{{interview.type}}</span>
+                            <span class="interview-date"><i class="far fa-calendar"></i> {{interview.date | date:'MMM d, y'}}</span>
+                            <span class="interview-time"><i class="far fa-clock"></i> {{interview.time}}</span>
+                            <span class="interview-type"><i class="fas fa-video"></i> {{interview.type}}</span>
                         </div>
                     </div>
                 </div>
             </div>
             <ng-template #noInterviews>
-                <p class="no-interviews">No upcoming interviews scheduled</p>
+                <div class="no-interviews">
+                    <p><i class="fas fa-info-circle"></i> No upcoming interviews</p>
+                </div>
             </ng-template>
         </section>
     </div>

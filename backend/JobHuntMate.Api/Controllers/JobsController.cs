@@ -8,7 +8,7 @@ namespace JobHuntMate.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class JobsController : ControllerBase
+    public class JobsController : BaseController
     {
         private readonly IJobService _jobService;
 
@@ -17,23 +17,35 @@ namespace JobHuntMate.Api.Controllers
             _jobService = jobService;
         }
 
-        [HttpGet]
+        [HttpGet()]
         public async Task<IActionResult> GetAllJobs()
         {
-            var jobs = await _jobService.GetAllJobsAsync();
+            var userId = GetUserIdFromToken(); // Use the common method
+            var jobs = await _jobService.GetAllJobsAsync(userId);
+            return Ok(jobs);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetJobyId(Guid id)
+        {
+            var userId = GetUserIdFromToken(); // Use the common method
+            var jobs = await _jobService.GetJobById(userId,id);
             return Ok(jobs);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateJob([FromBody] JobDto dto)
+        public async Task<IActionResult> CreateJob([FromBody] JobApplicationDto dto)
         {
+            var userId = GetUserIdFromToken();
+            dto.UserId = userId; // Set the user ID in the DTO
             var job = await _jobService.CreateJobAsync(dto);
             return CreatedAtAction(nameof(GetAllJobs), new { id = job.Id }, job);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateJob(Guid id, [FromBody] JobDto updatedJob)
+        public async Task<IActionResult> UpdateJob(Guid id, [FromBody] JobApplicationDto updatedJob)
         {
+            var userId = GetUserIdFromToken();
             var result = await _jobService.UpdateJobAsync(id, updatedJob);
             if (result == null)
                 return NotFound();
@@ -50,6 +62,29 @@ namespace JobHuntMate.Api.Controllers
                 return NotFound(new { message = "Job not found" });
 
             return NoContent();
+        }
+
+        [HttpGet("interviews")]
+        public async Task<IActionResult> GetInterviews()
+        {
+            var userId = GetUserIdFromToken();
+            return Ok(await _jobService.GetInterviews(userId));
+        }
+
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetStats()
+        {
+            var userId = GetUserIdFromToken();
+            var stats = await _jobService.GetStats(userId);
+            return Ok(stats);
+        }
+
+        [HttpGet("activity")]
+        public async Task<IActionResult> GetActivities()
+        {
+            var userId = GetUserIdFromToken();
+            var activities = await _jobService.GetActivity(userId);
+            return Ok(activities);
         }
     }
 }
