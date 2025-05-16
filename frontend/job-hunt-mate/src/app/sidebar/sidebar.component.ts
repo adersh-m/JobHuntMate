@@ -19,4 +19,10 @@ export class SidebarComponent {
     { icon: 'briefcase', label: 'Jobs', route: '/jobs' },
     { icon: 'cog', label: 'Settings', route: '/settings' }
   ];
+
+  sidebarCollapsed = false;
+
+  toggleSidebarCollapse() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
 }

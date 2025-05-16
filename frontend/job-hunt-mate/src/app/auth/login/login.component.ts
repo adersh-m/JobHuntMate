@@ -5,11 +5,12 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service'; 
 import { ErrorHandlingService } from '../../core/services/error-handling.service';
 import { AuthIllustrationComponent } from '../../shared/auth-illustration.component';
+import { DarkModeToggleComponent } from '../../shared/components/dark-mode-toggle/dark-mode-toggle.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, AuthIllustrationComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AuthIllustrationComponent, DarkModeToggleComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   encapsulation: ViewEncapsulation.None

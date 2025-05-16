@@ -1,29 +1,29 @@
-<header class="header">
-    <div class="logo-section">
-        <div class="logo-container">
-            <img *ngIf="logoUrl" [src]="logoUrl" alt="JobHuntMate Logo" class="logo-image"/>
-            <span class="logo-text">JobHuntMate</span>
-        </div>
+<header class="fixed top-0 left-0 right-0 h-[60px] bg-white dark:bg-gray-900 shadow flex items-center justify-between px-6 z-50">
+  <div class="flex items-center gap-3">
+    <a routerLink="/dashboard" class="flex items-center gap-2 hover:no-underline">
+      <img src="/job_hunt_mate_header_logo.png" alt="JobHuntMate Logo" class="h-16 w-auto"/>
+    </a>
+  </div>
+  <div class="flex items-center gap-4">
+    <app-dark-mode-toggle></app-dark-mode-toggle>
+    <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
+      <a routerLink="/login" class="px-3 py-1 rounded text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-gray-800 transition">Sign In</a>
+      <a routerLink="/register" class="px-3 py-1 rounded bg-blue-700 dark:bg-blue-800 text-white font-medium hover:bg-blue-800 dark:hover:bg-blue-900 transition">Sign Up</a>
+    </ng-container>
+    <div class="relative" *ngIf="authService.isAuthenticated$ | async">
+      <button class="flex items-center gap-2 px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition text-gray-900 dark:text-gray-100" (click)="toggleUserMenu()">
+        <i class="fas fa-user"></i>
+        <span class="font-medium" *ngIf="username">{{ username }}</span>
+        <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded shadow-lg py-2" *ngIf="showUserMenu">
+        <a routerLink="/settings" class="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+        <button class="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left transition" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i> Sign Out
+        </button>
+      </div>
     </div>
-    <div class="header-actions">
-        <app-dark-mode-toggle></app-dark-mode-toggle>
-        <ng-container *ngIf="!(authService.isAuthenticated$ | async)">
-            <a routerLink="/login" class="auth-btn login">Sign In</a>
-            <a routerLink="/register" class="auth-btn register">Sign Up</a>
-        </ng-container>
-        <div class="user-menu" *ngIf="authService.isAuthenticated$ | async">            <button class="auth-btn user-btn" (click)="toggleUserMenu()">
-                <i class="fas fa-user"></i>
-                <span class="username">{{ username }}</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="user-dropdown" *ngIf="showUserMenu">
-                <a routerLink="/settings" class="dropdown-item">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-                <button class="dropdown-item" (click)="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </button>
-            </div>
-        </div>
-    </div>
+  </div>
 </header>

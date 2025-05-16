@@ -6,6 +6,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { AuthService } from './core/services/auth.service';
 import { NotificationComponent } from './shared/components/notification/notification.component';
 import { LoaderComponent } from './shared/components/loader/loader.component';
+import { DarkModeToggleComponent } from './shared/components/dark-mode-toggle/dark-mode-toggle.component';
 import { filter } from 'rxjs/operators';
 
 @Component({

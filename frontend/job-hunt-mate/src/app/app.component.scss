@@ -1,41 +1,7 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  background-color: #f8f8f8;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  -webkit-overflow-scrolling: touch;
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.main-content {
-  display: flex;
-  flex: 1;
-  min-height: calc(100vh - 60px);
-}
-
-.content-area {
-  flex: 1;
-  // padding: 20px;
-  background-color: var(--background);
-  overflow-y: auto;
-  height: 100%;
-}
-
-.dark .content-area {
-  padding: 0;
-  background-color: #0f172a;
-}
+// * {
+//   margin: 0;
+//   padding: 0;
+//   box-sizing: border-box;
+// }
 
 
